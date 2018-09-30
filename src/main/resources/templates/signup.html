@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Sign Out</title>
+    <title>Sign Up</title>
     <link rel="stylesheet" href="/css/main.css" />
 
     <!-- https://cdnjs.com/libraries/sockjs-client -->
@@ -11,7 +11,8 @@
 </head>
 <body>
 <div id="login-container" class="username-page-container">
-    <h1 class="title">Sign out:</h1>
+    <h1 class="title">Sign up:</h1>
+    <p th:if="${signUpError}" class="error-event">Please, enter correct username, e-mail and password!</p>
     <form id="signOutForm" name="signOutForm" method="POST">
         <div class="form-group">
             <input type="text" name="username" placeholder="Your username" autocomplete="off" class="form-control" />
@@ -22,7 +23,7 @@
         </div>
         <br>
         <div class="form-group">
-            <button type="submit" class="accent username-submit">Sign out</button>
+            <button type="submit" class="accent username-submit">Sign up</button>
         </div>
         <div class="form-group">
             <a th:href="@{/goToSignInPage}">Return to Sign In page</a>
