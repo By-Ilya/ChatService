@@ -41,7 +41,15 @@ public class MainController {
 
 
     @RequestMapping(path = "/login", method = RequestMethod.GET)
-    public String showLoginPage() {
+    public String showLoginPage(HttpServletRequest request, Model model) {
+        String message = (String) request.getSession().getAttribute("message");
+
+        if (message != null) {
+            model.addAttribute("message", message);
+        }
+
+        request.getSession().removeAttribute("message");
+
         return "login";
     }
 
@@ -52,13 +60,15 @@ public class MainController {
         password = password.trim();
 
         if (username.isEmpty() || password.isEmpty()) {
-            return "login";
+            request.getSession().setAttribute("message", "Please, enter all fields!");
+            return "redirect:/login";
         }
 
         User dataSet = userRepository.getByLogin(username);
 
         if (dataSet == null || !dataSet.getPassword().equals(password)) {
-            return "login";
+            request.getSession().setAttribute("message", "Wrong username or password!");
+            return "redirect:/login";
         }
 
 
@@ -75,33 +85,16 @@ public class MainController {
         return "redirect:/login";
     }
 
-    @RequestMapping(path = "/signout", method = RequestMethod.GET)
-    public String showSignOutPage() {
-        return "signout";
-    }
-
-
-    @RequestMapping(path = "/goToSignInPage")
-    public String goToSignInPage(HttpServletRequest request) {
-        return "redirect:/login";
-    }
-
-
-    @RequestMapping(path = "/login-error", method = RequestMethod.GET)
-    public String showLoginPageWithError(Model model) {
-        model.addAttribute("loginError", true);
-        return "login";
-    }
-
-    @RequestMapping(path = "/login-error", method = RequestMethod.POST)
-    public String doLoginAfterError(HttpServletRequest request, @RequestParam(defaultValue = "") String username,
-                                    @RequestParam(defaultValue = "") String password, Model model) {
-        return doLogin(request, username, password);
-    }
-
-
     @RequestMapping(path = "/signup", method = RequestMethod.GET)
-    public String showSignUpPage() {
+    public String showSignOutPage(HttpServletRequest request, Model model) {
+        String message = (String) request.getSession().getAttribute("message");
+
+        if (message != null) {
+            model.addAttribute("message", message);
+        }
+
+        request.getSession().removeAttribute("message");
+
         return "signup";
     }
 
@@ -114,12 +107,14 @@ public class MainController {
         password = password.trim();
 
         if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            return "redirect:/signup-error";
+            request.getSession().setAttribute("message", "Please, enter all fields");
+            return "redirect:/signup";
         }
 
 
         if (userRepository.getByLogin(username) != null) {
-            return "redirect:/signup-error";
+            request.getSession().setAttribute("message", "User '" + username + "' already exists!");
+            return "redirect:/signup";
         }
 
         long userId = userRepository.save(new User(username, email, password, false)).getId();
@@ -132,17 +127,8 @@ public class MainController {
         return "redirect:/";
     }
 
-    @RequestMapping(path = "/signup-error", method = RequestMethod.GET)
-    public String showSignUpPageWithError(Model model) {
-        model.addAttribute("signUpError", true);
-        return "/signup";
+    @RequestMapping(path = "/goToSignInPage")
+    public String goToSignInPage() {
+        return "redirect:/login";
     }
-
-    @RequestMapping(path = "/signup-error", method = RequestMethod.POST)
-    public String doSignUpAfterError(HttpServletRequest request, @RequestParam(defaultValue = "") String username,
-                                     @RequestParam(defaultValue = "") String email,
-                                     @RequestParam(defaultValue = "") String password) {
-        return doSignUp(request, username, email, password);
-    }
-
 }

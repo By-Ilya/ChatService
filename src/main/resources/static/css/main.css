@@ -319,3 +319,9 @@ button.accent {
     top: 65px;
     width: 100%;
 }
+
+.error-event {
+    color: #ff4743;
+    font-size: 14px;
+    word-wrap: break-word;
+}

@@ -12,7 +12,7 @@
 <body>
 <div id="login-container" class="username-page-container">
     <h1 class="title">Sign in:</h1>
-    <p th:if="${loginError}" class="error-event">Wrong username or password!</p>
+    <p th:text="${message}" class="error-event"></p>
     <form id="loginForm" name="loginForm" method="POST">
         <div class="form-group">
             <input type="text" name="username" placeholder="Username" autocomplete="off" class="form-control" />

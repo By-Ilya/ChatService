@@ -12,7 +12,7 @@
 <body>
 <div id="login-container" class="username-page-container">
     <h1 class="title">Sign up:</h1>
-    <p th:if="${signUpError}" class="error-event">Please, enter correct username, e-mail and password!</p>
+    <p th:text="${message}" class="error-event"></p>
     <form id="signOutForm" name="signOutForm" method="POST">
         <div class="form-group">
             <input type="text" name="username" placeholder="Your username" autocomplete="off" class="form-control" />
