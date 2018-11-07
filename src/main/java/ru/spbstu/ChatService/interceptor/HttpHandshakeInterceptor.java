@@ -13,12 +13,13 @@ import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 @Component
-public class HttpHandshakeInterceprtor implements HandshakeInterceptor {
+public class HttpHandshakeInterceptor implements HandshakeInterceptor {
 
-    private static final Logger logger = LoggerFactory.getLogger(HttpHandshakeInterceprtor.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpHandshakeInterceptor.class);
 
     @Override
-    public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler, Map<String, Object> map) {
+    public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse,
+                                   WebSocketHandler webSocketHandler, Map<String, Object> map) {
         logger.info("Call beforeHandshake...");
 
         if (serverHttpRequest instanceof ServletServerHttpRequest) {
@@ -31,7 +32,8 @@ public class HttpHandshakeInterceprtor implements HandshakeInterceptor {
     }
 
     @Override
-    public void afterHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler, Exception e) {
+    public void afterHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse,
+                               WebSocketHandler webSocketHandler, Exception e) {
         logger.info("Call afterHandshake...");
     }
 }

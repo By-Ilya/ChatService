@@ -1,39 +1,82 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
-    <title>Spring Boot WebSocket</title>
+    <title>Web Chat</title>
     <link rel="stylesheet" th:href="@{/css/main.css}" />
 
-    <!-- https://cdnjs.com/libraries/sockjs-client -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
-    <!-- https://cdnjs.com/libraries/stomp.js/ -->
     <script  src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-
 </head>
+
 <body>
-<div id="chat-container">
-    <div class="chat-header">
-        <div class="user-container">
-            <a th:href="@{/logout}" onclick="logout()">Logout</a>
-        </div>
-        <h2>Web Chat for "<span id="username" th:text="${username}"></span>"</h2>
-    </div>
-    <div class="connecting">
-        Connecting...
-    </div>
-    <ul id="messageArea">
-    </ul>
-    <form id="messageForm" name="messageForm">
-        <div class="form-group">
-            <div class="input-group clearfix">
-                <input type="text" id="message" autocomplete="off" placeholder="Type a message..." class="form-control" />
-                <button type="submit" class="primary">Send</button>
+    <div th:if="${role}=='operator' or ${role}=='user'" id="invite-container" class="username-page-container">
+        <div th:if="${role}=='operator'" id="operator-container">
+            <div id="emptyRoom" class="hidden">
+                <p class="error-event">Please, enter the chat-room name!</p>
             </div>
+            <h1 class="title">Enter the name of a new chat-room:</h1>
+            <form id="chatRoomForm" name="chatRoomForm">
+                <div class="form-group">
+                    <input type="text" id="newRoom" placeholder="RoomID" autocomplete="off" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <button type="button" onclick="connectOperator()">Create new chat-room</button>
+                </div>
+            </form>
         </div>
-    </form>
-</div>
+        <div class="chat-header">
+            <form th:action="@{/logout}" class="user-container" method="post">
+                <button type="submit" onclick="logout()">Logout</button>
+            </form>
+            <h2 class="title">Invention Room [<span id="username" th:text="${username}"></span>]</h2>
+        </div>
+        <ul id="inventionArea">
+        </ul>
+    </div>
 
-<script th:src="@{/js/main.js}"></script>
+    <div th:if="${role}=='anonymous'" id="anonymous-container" class="username-page-container">
+        <h2 class="title">Name: <span id="username" th:text="${username}"></span></h2>
+        <h2 class="title"> Room: <span id="currRoom" th:text="${roomId}"></span></h2>
+        <p class="chat-message">Click 'Connect' to connect to the chat-room:</p>
+        <form id="acceptInvite" name="acceptInvite">
+            <div class="form-group">
+                <button type="button" onclick="connectAnonymous()">Connect</button>
+            </div>
+        </form>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" onclick="logout()">Logout</button>
+        </form>
+    </div>
 
+
+    <div id="chat-container" class="hidden">
+        <div class="chat-header">
+            <form th:action="@{/logout}" class="user-container" method="post">
+                <button type="submit" onclick="logout()">Logout</button>
+            </form>
+            <form class="user-container">
+                <button type="button" onclick="back()">Back</button>
+            </form>
+            <form th:if="${role}=='operator'" class="user-container">
+                <button type="button" onclick="sendInvite()">Invite</button>
+            </form>
+            <h2>Web Chat [<span th:text="${username}"></span>] [Room: <span id="room_id_display"></span>]</h2>
+        </div>
+        <div class="connecting">
+            Connecting...
+        </div>
+        <ul id="messageArea">
+        </ul>
+        <form id="messageForm" name="messageForm">
+            <div class="form-group">
+                <div class="input-group clearfix">
+                    <input type="text" id="message" autocomplete="off" placeholder="Type a message..." class="form-control" />
+                    <button type="submit" class="primary">Send</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script th:src="@{/js/main.js}"></script>
 </body>
 </html>

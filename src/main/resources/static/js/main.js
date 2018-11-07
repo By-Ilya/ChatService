@@ -1,46 +1,137 @@
 'use strict';
 
-
-var messageForm = document.querySelector('#messageForm');
-var messageInput = document.querySelector('#message');
-var messageArea = document.querySelector('#messageArea');
+var inviteContainer = document.querySelector('#invite-container');
+var inventionArea = document.querySelector('#inventionArea');
+var username = document.querySelector('#username').innerText.trim();
 var connectingElement = document.querySelector('.connecting');
 
+var chatElement = document.querySelector('#chat-container');
+var roomIdDisplay = document.querySelector('#room_id_display');
+var messageArea = document.querySelector('#messageArea');
+var messageForm = document.querySelector('#messageForm');
+var messageInput = document.querySelector('#message');
+
 var stompClient = null;
-var username = null;
+var currentSubscription;
+var topic = null;
+var roomId = null;
 
 var colors = [
     '#2196F3', '#32c787', '#00BCD4', '#ff5652',
     '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
 ];
 
+//--------------------------------------------------------------------------------------------------------------------//
 
-function connect() {
-    username = document.querySelector('#username').innerText.trim();
-
+function connectToInviteForm() {
     var socket = new SockJS('/ws');
     stompClient = Stomp.over(socket);
 
-    stompClient.connect({}, onConnected, onError);
+    stompClient.connect({}, onConnectedToForm, onError);
 }
 
-// Connect to WebSocket Server.
-connect();
+connectToInviteForm();
 
-function onConnected() {
-    // Subscribe to the Public Topic
-    stompClient.subscribe('/topic/public', onMessageReceived);
 
-    // Tell your username to the server
-    stompClient.send("/app/chat.addUser", {}, JSON.stringify({sender: username, type: 'JOIN'}));
+function onConnectedToForm() {
+    topic = '/app/chat/' + username + 'PI';
 
     connectingElement.classList.add('hidden');
+    currentSubscription = stompClient.subscribe('/channel/' + username + 'PI', onInventionReceived);
 }
-
 
 function onError(error) {
     connectingElement.textContent = 'Could not connect to WebSocket server. Please refresh this page to try again!';
     connectingElement.style.color = 'red';
+}
+
+
+function onInventionReceived(payload) {
+    var message = JSON.parse(payload.body);
+
+    var inventionElement = document.createElement('li');
+
+    if (message.type === 'INVITE') {
+        inventionElement.classList.add('chat-message');
+
+        var inputRoom = document.createElement('input');
+        inputRoom.type = 'button';
+        inputRoom.value = message.content;
+        inputRoom.setAttribute('onclick', 'connectToChat(\'' + message.content + '\')');
+
+        var textElement = document.createElement('p');
+        var messageText = document.createTextNode(message.sender + ' пригласил Вас в комнату. ' +
+            'Нажмите на название комнаты, чтобы войти.');
+        textElement.appendChild(messageText);
+
+        inventionElement.appendChild(inputRoom);
+        inventionElement.appendChild(textElement);
+
+        inventionArea.appendChild(inventionElement);
+        inventionArea.scrollTop = inventionArea.scrollHeight;
+    }
+}
+
+//--------------------------------------------------------------------------------------------------------------------//
+
+function connectOperator() {
+    var roomInput = document.getElementById('newRoom').value;
+
+    if (roomInput === "") {
+        document.getElementById('emptyRoom').classList.remove('hidden')
+    }
+    else {
+        connectToChat(roomInput);
+    }
+}
+
+function connectAnonymous() {
+    var roomInput = document.getElementById('currRoom').innerText.trim();
+    inviteContainer = document.querySelector('#anonymous-container');
+    inviteContainer.classList.add('hidden');
+
+    var socket = new SockJS('/ws');
+    stompClient = Stomp.over(socket);
+
+    roomId = roomInput;
+    chatElement.classList.remove('hidden');
+
+    stompClient.connect({}, onConnected, onError);
+}
+
+//--------------------------------------------------------------------------------------------------------------------//
+
+function connectToChat(roomName) {
+    inventionArea.innerHTML = '';
+    currentSubscription.unsubscribe();
+    stompClient.disconnect();
+
+    var socket = new SockJS('/ws');
+    stompClient = Stomp.over(socket);
+
+    roomId = roomName;
+    inviteContainer.classList.add('hidden');
+    chatElement.classList.remove('hidden');
+
+    stompClient.connect({}, onConnected, onError);
+}
+
+function enterRoom(newRoomId) {
+    roomIdDisplay.textContent = roomId;
+    topic = '/app/chat/' + newRoomId;
+
+    if (currentSubscription) {
+        currentSubscription.unsubscribe();
+    }
+
+    currentSubscription = stompClient.subscribe('/channel/' + roomId, onMessageReceived);
+
+    stompClient.send(topic + '/addUser', {}, JSON.stringify({sender: username, type: 'JOIN'}));
+}
+
+function onConnected() {
+    enterRoom(roomId);
+    connectingElement.classList.add('hidden');
 }
 
 
@@ -53,14 +144,12 @@ function sendMessage(event) {
             sender: username,
             content: messageInput.value,
             type: 'CHAT',
-            time: date.toLocaleString()
         };
-        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+        stompClient.send(topic + '/sendMessage', {}, JSON.stringify(chatMessage));
         messageInput.value = '';
     }
     event.preventDefault();
 }
-
 
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
@@ -103,11 +192,14 @@ function onMessageReceived(payload) {
 }
 
 function postMessageTime(messageTime) {
+    var dateTime = new Date(messageTime);
+    dateTime = dateTime.toLocaleString("ru-RU");
+
     var timeElement = document.createElement('li');
     timeElement.classList.add('time-message');
     var textElement = document.createElement('p');
 
-    var timeText = document.createTextNode('(' + messageTime + ')');
+    var timeText = document.createTextNode('(' + dateTime + ')');
     textElement.appendChild(timeText);
 
     timeElement.appendChild(textElement);
@@ -125,13 +217,41 @@ function getAvatarColor(messageSender) {
 }
 
 
+function back() {
+    var chatMessage = {
+        sender: username,
+        type: 'LEAVE'
+    };
+    stompClient.send(topic + '/sendMessage', {}, JSON.stringify(chatMessage));
+    currentSubscription.unsubscribe();
+
+    chatElement.classList.add('hidden');
+    messageArea.innerHTML = '';
+    inviteContainer.classList.remove('hidden');
+
+    connectToInviteForm();
+}
+
 function logout() {
     var chatMessage = {
         sender: username,
         type: 'LEAVE'
     };
-    stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+    stompClient.send(topic + '/sendMessage', {}, JSON.stringify(chatMessage));
 }
 
 
 messageForm.addEventListener('submit', sendMessage, true);
+
+//--------------------------------------------------------------------------------------------------------------------//
+
+function sendInvite() {
+    var chatMessage = {
+        sender: username,
+        content: roomId,
+        type: 'INVITE'
+    };
+    stompClient.send('/app/chat/UtopiaPI/sendMessage', {}, JSON.stringify(chatMessage));
+}
+
+//--------------------------------------------------------------------------------------------------------------------//

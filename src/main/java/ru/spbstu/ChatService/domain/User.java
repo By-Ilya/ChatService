@@ -3,7 +3,9 @@ package ru.spbstu.ChatService.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -13,37 +15,29 @@ import java.io.Serializable;
 @Table(name = "users")
 public class User implements Serializable {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NonNull
-    @Column(unique = true, updatable = false)
+    @Column(unique = true)
     private String login;
 
-    @Column(unique = true, updatable = false)
+    @Column(unique = true)
     private String email;
 
     @NonNull
-    @Column(updatable = false)
+    @Column
     private String password;
 
-    @NonNull
+    @Column
+    private String activationCode;
+
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles;
+
     @Column(updatable = false)
-    private boolean option;
-
-    public User(String login, String email, String password, boolean option) {
-        this.login = login;
-        this.email = email;
-        this.password = password;
-        this.option = option;
-    }
-
-
-   // @Override
-   // public String toString() {
-   //     return "UsersDataSet{id = " + user_id + ", login = " + login + ", email = " + email +
-    //            ", password = " + password + ", option =" + option + "}";
-    //}
+    private boolean active;
 }

@@ -124,6 +124,10 @@ button.accent {
     margin-top: -160px;
 }
 
+#invite-container {
+    top: 170px;
+    max-width: 550px;
+}
 
 #login-page {
     text-align: center;

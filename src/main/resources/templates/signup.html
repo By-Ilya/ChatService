@@ -3,17 +3,12 @@
 <head>
     <title>Sign Up</title>
     <link rel="stylesheet" href="/css/main.css" />
-
-    <!-- https://cdnjs.com/libraries/sockjs-client -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
-    <!-- https://cdnjs.com/libraries/stomp.js/ -->
-    <script  src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 <body>
 <div id="login-container" class="username-page-container">
-    <h1 class="title">Sign up:</h1>
     <p th:text="${message}" class="error-event"></p>
-    <form id="signOutForm" name="signOutForm" method="POST">
+    <h1 class="title">Sign up:</h1>
+    <form id="signOutForm" name="signOutForm" th:action="@{/signup}" method="post">
         <div class="form-group">
             <input type="text" name="username" placeholder="Your username" autocomplete="off" class="form-control" />
             <br><br>

@@ -13,8 +13,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "utterances")
+public class Message implements Serializable {
 
-public class Utterance implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,15 +25,17 @@ public class Utterance implements Serializable {
     @Column
     @NotNull
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date messageDate;
+    private Date dateTime;
 
     @ManyToOne
-    @JoinColumn (name="dialog")  //, unique = true, updatable = false)
+    private User author;
+
+    @ManyToOne
     private Dialog dialog;
 
-    public Utterance(String text, Date time, Dialog dialog_id) {
+    public Message(String text, Date time, Dialog dialog_id) {
         this.text = text;
-        this.messageDate = time;
+        this.dateTime = time;
         this.dialog = dialog_id;
     }
 }

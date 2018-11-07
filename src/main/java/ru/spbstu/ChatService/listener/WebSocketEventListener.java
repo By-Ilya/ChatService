@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import ru.spbstu.ChatService.model.ChatMessage;
 
+import static java.lang.String.format;
+
 @Component
 public class WebSocketEventListener {
 
@@ -28,15 +30,16 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
         String username = (String) headerAccessor.getSessionAttributes().get("username");
+        String roomId = (String) headerAccessor.getSessionAttributes().get("room_id");
 
         if (username != null) {
-            logger.info("User disconnected: ", username);
+            logger.info("User disconnected: " + username);
 
             ChatMessage message = new ChatMessage();
             message.setType(ChatMessage.MessageType.LEAVE);
             message.setSender(username);
 
-            messagingTemplate.convertAndSend("/topic/public", message);
+            messagingTemplate.convertAndSend(format("/channel/%s", roomId), message);
         }
     }
 }

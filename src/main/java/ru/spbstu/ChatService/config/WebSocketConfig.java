@@ -6,14 +6,14 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-import ru.spbstu.ChatService.interceptor.HttpHandshakeInterceprtor;
+import ru.spbstu.ChatService.interceptor.HttpHandshakeInterceptor;
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Autowired
-    private HttpHandshakeInterceprtor handshakeInterceprtor;
+    private HttpHandshakeInterceptor handshakeInterceprtor;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -23,6 +23,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app");
-        registry.enableSimpleBroker("/topic");
+        registry.enableSimpleBroker("/channel");
     }
 }

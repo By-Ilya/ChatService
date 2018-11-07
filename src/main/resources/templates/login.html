@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Login</title>
     <link rel="stylesheet" href="/css/main.css" />
-
-    <!-- https://cdnjs.com/libraries/sockjs-client -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
-    <!-- https://cdnjs.com/libraries/stomp.js/ -->
-    <script  src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 <body>
 <div id="login-container" class="username-page-container">
+    <div th:if="${param.error}" class="error-event">
+        Invalid username or password!
+    </div>
+    <div th:if="${param.logout}" class="error-event">
+        You have been logged out!
+    </div>
+    <div th:if="${message}" class="error-event">
+        <p th:text="${message}"></p>
+    </div>
     <h1 class="title">Sign in:</h1>
-    <p th:text="${message}" class="error-event"></p>
-    <form id="loginForm" name="loginForm" method="POST">
+    <form id="loginForm" name="loginForm" th:action="@{/login}" method="post">
         <div class="form-group">
             <input type="text" name="username" placeholder="Username" autocomplete="off" class="form-control" />
             <br><br>
@@ -28,5 +31,6 @@
         </div>
     </form>
 </div>
+
 </body>
 </html>
