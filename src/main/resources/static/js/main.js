@@ -91,6 +91,8 @@ function onInventionReceived(payload) {
 function connectOperator() {
     roomName = document.getElementById('newRoomName').value;
 
+    document.getElementById('invite-users').classList.remove('hidden');
+
     if (roomName === "") {
         document.getElementById('emptyRoomName').classList.remove('hidden')
     }
@@ -103,6 +105,10 @@ function connectOperator() {
 function connectUser(newRoomId, newRoomName) {
     roomId = newRoomId;
     roomName = newRoomName;
+
+    if (document.getElementById('invite-users') != null) {
+        document.getElementById('invite-users').classList.add('hidden');
+    }
 
     connectToChat();
 }
@@ -326,16 +332,21 @@ function sendInvite(user) {
 function sendInviteByEmail() {
     let email = document.getElementById("email").value;
 
-    let chatMessage = {
-        sender: username,
-        sendTo: email,
-        content: roomName,
-        type: 'INVITE_BY_EMAIL'
-    };
-    stompClient.send(topic + '/sendMessage', {}, JSON.stringify(chatMessage));
+    if (email === '') {
+        document.getElementById('emptyEmail').classList.remove('hidden');
+    }
+    else {
+        let chatMessage = {
+            sender: username,
+            sendTo: email,
+            content: roomName,
+            type: 'INVITE_BY_EMAIL'
+        };
+        stompClient.send(topic + '/sendMessage', {}, JSON.stringify(chatMessage));
 
-    alert('Invitation to ' + email + ' sent!');
-    document.getElementById("email").value = '';
+        alert('Invitation to ' + email + ' sent!');
+        document.getElementById("email").value = '';
+    }
 }
 
 //--------------------------------------------------------------------------------------------------------------------//
