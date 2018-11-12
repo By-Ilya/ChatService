@@ -336,6 +336,8 @@ function sendInviteByEmail() {
         document.getElementById('emptyEmail').classList.remove('hidden');
     }
     else {
+        document.getElementById('emptyEmail').classList.add('hidden');
+        
         let chatMessage = {
             sender: username,
             sendTo: email,
