@@ -37,7 +37,7 @@ public class SignUpController {
     }
 
     @PostMapping("/signup")
-    public String doSignUp(HttpServletRequest request, Model model, User user,
+    public String doSignUp(Model model, User user,
                            @RequestParam(defaultValue = "") String username,
                            @RequestParam(defaultValue = "") String password,
                            @RequestParam(defaultValue = "") String email) {
@@ -64,8 +64,8 @@ public class SignUpController {
         user.setLogin(username);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
-        user.setActive(true);
-        user.setRoles(Collections.singleton(Role.USER));
+        user.setActive(false);
+        user.setRoles(Collections.singleton(Role.OPERATOR));
         user.setActivationCode(UUID.randomUUID().toString());
 
         String message = String.format(
@@ -80,9 +80,9 @@ public class SignUpController {
         long userId = userRepository.save(user).getId();
         System.out.println("Add user id: " + userId);
 
-        request.getSession().setAttribute("username", username);
+        model.addAttribute("message", "Please, visit your e-mail to activate account.");
 
-        return "redirect:/";
+        return "login";
     }
 
     @GetMapping("/activate/{code}")

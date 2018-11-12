@@ -8,7 +8,11 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
+import ru.spbstu.ChatService.domain.User;
 import ru.spbstu.ChatService.model.ChatMessage;
+import ru.spbstu.ChatService.repository.UserRepository;
+
+import javax.validation.constraints.Null;
 
 import static java.lang.String.format;
 
@@ -29,17 +33,22 @@ public class WebSocketEventListener {
     public void handleWebSocketEventDisconnectListener(SessionConnectedEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
-        String username = (String) headerAccessor.getSessionAttributes().get("username");
-        String roomId = (String) headerAccessor.getSessionAttributes().get("room_id");
+        try {
+            String username = (String) headerAccessor.getSessionAttributes().get("username");
+            String roomId = (String) headerAccessor.getSessionAttributes().get("room_id");
 
-        if (username != null) {
-            logger.info("User disconnected: " + username);
+            if (username != null) {
+                logger.info("User disconnected: " + username);
 
-            ChatMessage message = new ChatMessage();
-            message.setType(ChatMessage.MessageType.LEAVE);
-            message.setSender(username);
+                ChatMessage message = new ChatMessage();
+                message.setType(ChatMessage.MessageType.LEAVE);
+                message.setSender(username);
 
-            messagingTemplate.convertAndSend(format("/channel/%s", roomId), message);
+                messagingTemplate.convertAndSend(format("/channel/%s", roomId), message);
+            }
+        }
+        catch (NullPointerException err) {
+            logger.info("New connection registered!");
         }
     }
 }

@@ -13,12 +13,21 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "dialogs")
-public class Dialog implements Serializable {
+@Table(name = "sessions")
+public class Session implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "session_uid")
+    private String sessionUID;
+
+    @Column
     private String name;
+
+    public Session(String sessionUID, String name) {
+        this.sessionUID = sessionUID;
+        this.name = name;
+    }
 }

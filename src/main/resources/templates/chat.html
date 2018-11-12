@@ -11,13 +11,13 @@
 <body>
     <div th:if="${role}=='operator' or ${role}=='user'" id="invite-container" class="username-page-container">
         <div th:if="${role}=='operator'" id="operator-container">
-            <div id="emptyRoom" class="hidden">
+            <div id="emptyRoomName" class="hidden">
                 <p class="error-event">Please, enter the chat-room name!</p>
             </div>
             <h1 class="title">Enter the name of a new chat-room:</h1>
             <form id="chatRoomForm" name="chatRoomForm">
                 <div class="form-group">
-                    <input type="text" id="newRoom" placeholder="RoomID" autocomplete="off" class="form-control" />
+                    <input type="text" id="newRoomName" placeholder="RoomID" autocomplete="off" class="form-control" />
                 </div>
                 <div class="form-group">
                     <button type="button" onclick="connectOperator()">Create new chat-room</button>
@@ -30,13 +30,14 @@
             </form>
             <h2 class="title">Invention Room [<span id="username" th:text="${username}"></span>]</h2>
         </div>
-        <ul id="inventionArea">
+        <ul id="inventionArea" class="scrollbox">
         </ul>
     </div>
 
     <div th:if="${role}=='anonymous'" id="anonymous-container" class="username-page-container">
         <h2 class="title">Name: <span id="username" th:text="${username}"></span></h2>
-        <h2 class="title"> Room: <span id="currRoom" th:text="${roomId}"></span></h2>
+        <h2 class="title"> Room: <span id="currRoomName" th:text="${roomName}"></span></h2>
+        <p id="roomUID" th:text="${roomId}" class="hidden"></p>
         <p class="chat-message">Click 'Connect' to connect to the chat-room:</p>
         <form id="acceptInvite" name="acceptInvite">
             <div class="form-group">
@@ -54,12 +55,15 @@
             <form th:action="@{/logout}" class="user-container" method="post">
                 <button type="submit" onclick="logout()">Logout</button>
             </form>
-            <form class="user-container">
+            <form th:if="${role}=='operator' or ${role}=='user'" class="user-container">
                 <button type="button" onclick="back()">Back</button>
             </form>
-            <form th:if="${role}=='operator'" class="user-container">
-                <button type="button" onclick="sendInvite()">Invite</button>
+            <form id="invite-users" th:if="${role}=='operator'" class="user-container">
+                <button type="button" onclick="openUsersList()">Invite user</button>
             </form>
+            <h2 align="left">Tools:</h2>
+        </div>
+        <div class="chat-header">
             <h2>Web Chat [<span th:text="${username}"></span>] [Room: <span id="room_id_display"></span>]</h2>
         </div>
         <div class="connecting">
@@ -75,6 +79,21 @@
                 </div>
             </div>
         </form>
+    </div>
+
+    <div id="all-users-container" class="hidden">
+        <h2 class="title">Invite user by e-mail:</h2>
+        <form id="inviteForm" name="inviteForm">
+            <input type="email" id="email" placeholder="E-mail" autocomplete="off" class="form-control" />
+            <br><br>
+            <button type="button" onclick="sendInviteByEmail()">Invite by e-mail</button>
+        </form>
+        <h2 class="title">All users online:</h2>
+        <div class="scrollbox">
+            <ul id="userListArea">
+            </ul>
+        </div>
+        <button type="button" onclick="closeUsersList()">Back to chat</button>
     </div>
 
     <script th:src="@{/js/main.js}"></script>

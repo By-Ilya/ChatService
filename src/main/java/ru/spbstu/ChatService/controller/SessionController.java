@@ -5,26 +5,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.spbstu.ChatService.repository.DialogRepository;
+import ru.spbstu.ChatService.repository.SessionRepository;
 import ru.spbstu.ChatService.repository.UserRepository;
 
+
 @RestController
-@RequestMapping("/dialogs/")
-public class DialogController {
+@RequestMapping("/sessions/")
+public class SessionController {
 
     @Autowired
-    private DialogRepository dialogRepository;
+    private SessionRepository sessionRepository;
 
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping
-    public void addDialog() {
+    @PostMapping("/addSession")
+    public void addSession() {
 
-    }
-
-    @PostMapping("/add")
-    public void addUser() {
-        
     }
 }

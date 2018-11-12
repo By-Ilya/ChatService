@@ -1,30 +1,42 @@
 'use strict';
 
-var inviteContainer = document.querySelector('#invite-container');
-var inventionArea = document.querySelector('#inventionArea');
-var username = document.querySelector('#username').innerText.trim();
-var connectingElement = document.querySelector('.connecting');
+let inviteContainer = document.querySelector('#invite-container');
+let inventionArea = document.querySelector('#inventionArea');
+let username = document.querySelector('#username').innerText.trim();
+let connectingElement = document.querySelector('.connecting');
 
-var chatElement = document.querySelector('#chat-container');
-var roomIdDisplay = document.querySelector('#room_id_display');
-var messageArea = document.querySelector('#messageArea');
-var messageForm = document.querySelector('#messageForm');
-var messageInput = document.querySelector('#message');
+let chatElement = document.querySelector('#chat-container');
+let roomNameDisplay = document.querySelector('#room_id_display');
+let messageArea = document.querySelector('#messageArea');
+let messageForm = document.querySelector('#messageForm');
+let messageInput = document.querySelector('#message');
 
-var stompClient = null;
-var currentSubscription;
-var topic = null;
-var roomId = null;
+let stompClient = null;
+let currentSubscription;
+let topic = null;
 
-var colors = [
+let roomId = null;
+let roomName = null;
+
+let colors = [
     '#2196F3', '#32c787', '#00BCD4', '#ff5652',
     '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
 ];
 
 //--------------------------------------------------------------------------------------------------------------------//
 
+function S4() {
+    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+}
+
+function uuid() {
+    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+}
+
+//--------------------------------------------------------------------------------------------------------------------//
+
 function connectToInviteForm() {
-    var socket = new SockJS('/ws');
+    let socket = new SockJS('/ws');
     stompClient = Stomp.over(socket);
 
     stompClient.connect({}, onConnectedToForm, onError);
@@ -47,24 +59,26 @@ function onError(error) {
 
 
 function onInventionReceived(payload) {
-    var message = JSON.parse(payload.body);
+    let message = JSON.parse(payload.body);
 
-    var inventionElement = document.createElement('li');
+    let inventionElement = document.createElement('li');
 
     if (message.type === 'INVITE') {
         inventionElement.classList.add('chat-message');
 
-        var inputRoom = document.createElement('input');
-        inputRoom.type = 'button';
-        inputRoom.value = message.content;
-        inputRoom.setAttribute('onclick', 'connectToChat(\'' + message.content + '\')');
+        let buttonRoom = document.createElement('button');
+        buttonRoom.type = 'button';
+        buttonRoom.classList.add('button');
+        buttonRoom.setAttribute('onclick', 'connectUser(\'' + message.sender + '\', \'' + message.content + '\')');
 
-        var textElement = document.createElement('p');
-        var messageText = document.createTextNode(message.sender + ' пригласил Вас в комнату. ' +
-            'Нажмите на название комнаты, чтобы войти.');
+        let textRoom = document.createTextNode(message.content);
+        buttonRoom.appendChild(textRoom);
+
+        let textElement = document.createElement('p');
+        let messageText = document.createTextNode('Вас пригласили в чат. Нажмите на название комнаты, чтобы войти.');
         textElement.appendChild(messageText);
 
-        inventionElement.appendChild(inputRoom);
+        inventionElement.appendChild(buttonRoom);
         inventionElement.appendChild(textElement);
 
         inventionArea.appendChild(inventionElement);
@@ -75,25 +89,33 @@ function onInventionReceived(payload) {
 //--------------------------------------------------------------------------------------------------------------------//
 
 function connectOperator() {
-    var roomInput = document.getElementById('newRoom').value;
+    roomName = document.getElementById('newRoomName').value;
 
-    if (roomInput === "") {
-        document.getElementById('emptyRoom').classList.remove('hidden')
+    if (roomName === "") {
+        document.getElementById('emptyRoomName').classList.remove('hidden')
     }
     else {
-        connectToChat(roomInput);
+        roomId = uuid();
+        connectToChat();
     }
 }
 
-function connectAnonymous() {
-    var roomInput = document.getElementById('currRoom').innerText.trim();
-    inviteContainer = document.querySelector('#anonymous-container');
-    inviteContainer.classList.add('hidden');
+function connectUser(newRoomId, newRoomName) {
+    roomId = newRoomId;
+    roomName = newRoomName;
 
-    var socket = new SockJS('/ws');
+    connectToChat();
+}
+
+function connectAnonymous() {
+    roomId = document.getElementById('roomUID').innerText.trim();
+    roomName = document.getElementById('currRoomName').innerText.trim();
+    inviteContainer = document.querySelector('#anonymous-container');
+
+    let socket = new SockJS('/ws');
     stompClient = Stomp.over(socket);
 
-    roomId = roomInput;
+    inviteContainer.classList.add('hidden');
     chatElement.classList.remove('hidden');
 
     stompClient.connect({}, onConnected, onError);
@@ -101,46 +123,44 @@ function connectAnonymous() {
 
 //--------------------------------------------------------------------------------------------------------------------//
 
-function connectToChat(roomName) {
+function connectToChat() {
     inventionArea.innerHTML = '';
     currentSubscription.unsubscribe();
     stompClient.disconnect();
 
-    var socket = new SockJS('/ws');
+    let socket = new SockJS('/ws');
     stompClient = Stomp.over(socket);
 
-    roomId = roomName;
     inviteContainer.classList.add('hidden');
     chatElement.classList.remove('hidden');
 
     stompClient.connect({}, onConnected, onError);
 }
 
-function enterRoom(newRoomId) {
-    roomIdDisplay.textContent = roomId;
-    topic = '/app/chat/' + newRoomId;
+function enterRoom() {
+    roomNameDisplay.textContent = roomName;
+    topic = '/app/chat/' + roomId;
 
     if (currentSubscription) {
         currentSubscription.unsubscribe();
     }
 
     currentSubscription = stompClient.subscribe('/channel/' + roomId, onMessageReceived);
-
-    stompClient.send(topic + '/addUser', {}, JSON.stringify({sender: username, type: 'JOIN'}));
+    stompClient.send(topic + '/addUser', {}, JSON.stringify({sender: username, type: 'JOIN', content: roomName}));
 }
 
 function onConnected() {
-    enterRoom(roomId);
+    enterRoom();
     connectingElement.classList.add('hidden');
 }
 
 
 function sendMessage(event) {
-    var messageContent = messageInput.value.trim();
-    var date = new Date();
+    let messageContent = messageInput.value.trim();
+    let date = new Date();
 
     if(messageContent && stompClient) {
-        var chatMessage = {
+        let chatMessage = {
             sender: username,
             content: messageInput.value,
             type: 'CHAT',
@@ -152,9 +172,9 @@ function sendMessage(event) {
 }
 
 function onMessageReceived(payload) {
-    var message = JSON.parse(payload.body);
+    let message = JSON.parse(payload.body);
 
-    var messageElement = document.createElement('li');
+    let messageElement = document.createElement('li');
 
     if(message.type === 'JOIN') {
         messageElement.classList.add('event-message');
@@ -165,21 +185,21 @@ function onMessageReceived(payload) {
     } else {
         messageElement.classList.add('chat-message');
 
-        var avatarElement = document.createElement('i');
-        var avatarText = document.createTextNode(message.sender[0]);
+        let avatarElement = document.createElement('i');
+        let avatarText = document.createTextNode(message.sender[0]);
         avatarElement.appendChild(avatarText);
         avatarElement.style['background-color'] = getAvatarColor(message.sender);
 
         messageElement.appendChild(avatarElement);
 
-        var usernameElement = document.createElement('span');
-        var usernameText = document.createTextNode(message.sender);
+        let usernameElement = document.createElement('span');
+        let usernameText = document.createTextNode(message.sender);
         usernameElement.appendChild(usernameText);
         messageElement.appendChild(usernameElement);
     }
 
-    var textElement = document.createElement('p');
-    var messageText = document.createTextNode(message.content);
+    let textElement = document.createElement('p');
+    let messageText = document.createTextNode(message.content);
 
     textElement.appendChild(messageText);
     messageElement.appendChild(textElement);
@@ -192,14 +212,14 @@ function onMessageReceived(payload) {
 }
 
 function postMessageTime(messageTime) {
-    var dateTime = new Date(messageTime);
+    let dateTime = new Date(messageTime);
     dateTime = dateTime.toLocaleString("ru-RU");
 
-    var timeElement = document.createElement('li');
+    let timeElement = document.createElement('li');
     timeElement.classList.add('time-message');
-    var textElement = document.createElement('p');
+    let textElement = document.createElement('p');
 
-    var timeText = document.createTextNode('(' + dateTime + ')');
+    let timeText = document.createTextNode('(' + dateTime + ')');
     textElement.appendChild(timeText);
 
     timeElement.appendChild(textElement);
@@ -208,17 +228,17 @@ function postMessageTime(messageTime) {
 
 
 function getAvatarColor(messageSender) {
-    var hash = 0;
-    for (var i = 0; i < messageSender.length; i++) {
+    let hash = 0;
+    for (let i = 0; i < messageSender.length; i++) {
         hash = 31 * hash + messageSender.charCodeAt(i);
     }
-    var index = Math.abs(hash % colors.length);
+    let index = Math.abs(hash % colors.length);
     return colors[index];
 }
 
 
 function back() {
-    var chatMessage = {
+    let chatMessage = {
         sender: username,
         type: 'LEAVE'
     };
@@ -233,7 +253,7 @@ function back() {
 }
 
 function logout() {
-    var chatMessage = {
+    let chatMessage = {
         sender: username,
         type: 'LEAVE'
     };
@@ -245,13 +265,77 @@ messageForm.addEventListener('submit', sendMessage, true);
 
 //--------------------------------------------------------------------------------------------------------------------//
 
-function sendInvite() {
-    var chatMessage = {
-        sender: username,
-        content: roomId,
+let allUsersContainer = document.querySelector('#all-users-container');
+let userListArea = document.querySelector('#userListArea');
+
+function openUsersList() {
+    chatElement.classList.add('hidden');
+    allUsersContainer.classList.remove('hidden');
+    allUsersContainer.classList.add('username-page-container');
+
+    getUsersList();
+}
+
+function closeUsersList() {
+    allUsersContainer.classList.add('hidden');
+    userListArea.innerHTML = '';
+    chatElement.classList.remove('hidden');
+}
+
+function getUsersList() {
+    fetch("/users/")
+        .then(response => {
+            response.text().then(data =>{
+                console.log(data);
+                let users = JSON.parse(data);
+                let userListArea = document.getElementById('userListArea');
+                for (let user of users) {
+                    let userElement = document.createElement("li");
+                    let userLogin = user.login;
+
+                    let userLoginButton = document.createElement('button');
+                    userLoginButton.type = 'button';
+                    userLoginButton.classList.add('button');
+                    userLoginButton.setAttribute('onclick', 'sendInvite(\'' + userLogin + '\')');
+
+                    let userText = document.createTextNode(userLogin);
+
+                    userLoginButton.appendChild(userText);
+                    userElement.appendChild(userLoginButton);
+                    userListArea.appendChild(userElement);
+                }
+            });
+        })
+        .catch(response => {
+            console.log("Something wrong!", response);
+        })
+}
+
+
+function sendInvite(user) {
+    let chatMessage = {
+        sender: roomId,
+        content: roomName,
         type: 'INVITE'
     };
-    stompClient.send('/app/chat/UtopiaPI/sendMessage', {}, JSON.stringify(chatMessage));
+    stompClient.send('/app/chat/' + user + 'PI/sendMessage', {}, JSON.stringify(chatMessage));
+
+    alert('Invitation sent!');
+}
+
+function sendInviteByEmail() {
+    let email = document.getElementById("email").value;
+
+    let chatMessage = {
+        sender: username,
+        sendTo: email,
+        content: roomName,
+        type: 'INVITE_BY_EMAIL'
+    };
+    stompClient.send(topic + '/sendMessage', {}, JSON.stringify(chatMessage));
+
+    alert('Invitation to ' + email + ' sent!');
+    document.getElementById("email").value = '';
 }
 
 //--------------------------------------------------------------------------------------------------------------------//

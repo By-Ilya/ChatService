@@ -1,7 +1,6 @@
 'use strict';
 
-
-var userListArea = document.querySelector('#userListArea');
+let userListArea = document.querySelector('#userListArea');
 
 function getUserList() {
     fetch("/users/")

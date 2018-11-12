@@ -31,11 +31,11 @@ public class Message implements Serializable {
     private User author;
 
     @ManyToOne
-    private Dialog dialog;
+    private Session session;
 
-    public Message(String text, Date time, Dialog dialog_id) {
+    public Message(String text, Date time, Session session_id) {
         this.text = text;
         this.dateTime = time;
-        this.dialog = dialog_id;
+        this.session = session_id;
     }
 }

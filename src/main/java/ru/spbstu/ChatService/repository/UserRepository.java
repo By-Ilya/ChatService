@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserRepository extends CrudRepository<User, Long> {
 
-    @Query("SELECT u from User u")
+    @Query("SELECT u FROM User u WHERE u.password IS NOT NULL AND u.active = true")
     List<User> getAllUsers();
 
     User getByLogin(String name);

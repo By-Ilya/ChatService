@@ -15,12 +15,14 @@ public class ChatMessage {
         CHAT,
         JOIN,
         INVITE,
+        INVITE_BY_EMAIL,
         LEAVE
     }
 
     private MessageType type;
     private String content;
     private String sender;
+    private String sendTo;
     private Date time;
 
     public ChatMessage(Message message) {

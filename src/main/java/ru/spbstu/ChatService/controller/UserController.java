@@ -12,7 +12,7 @@ import ru.spbstu.ChatService.repository.UserRepository;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users/")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired

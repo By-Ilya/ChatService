@@ -1,6 +1,7 @@
 package ru.spbstu.ChatService.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.CustomAutowireConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -9,21 +10,22 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
-import javax.sql.DataSource;
+import ru.spbstu.ChatService.component.CustomizeLogoutSuccessHandler;
+import ru.spbstu.ChatService.service.UserService;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private DataSource dataSource;
+    private UserService userService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private CustomizeLogoutSuccessHandler customizeLogoutSuccessHandler;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -34,14 +36,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/", "/signup", "/activate/*", "/invite/*", "/ws/**").permitAll()
+                    .antMatchers("/", "/signup", "/activate/*", "/invite/*", "/ws/**", "/operator/**").permitAll()
                     .anyRequest().authenticated()
                     .and()
                 .formLogin()
                     .loginPage("/login")
                     .permitAll()
                     .and()
-                .logout()
+                .logout().logoutSuccessHandler(customizeLogoutSuccessHandler)
                     .permitAll();
     }
 
@@ -52,12 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .passwordEncoder(passwordEncoder)
-                .usersByUsernameQuery("select login, password, active from users where login=? and " +
-                        "activation_code='activated'")
-                .authoritiesByUsernameQuery("select u.login, ur.roles from users u inner join user_role ur " +
-                        "on u.id = ur.user_id where u.login=?");
+        auth.userDetailsService(userService)
+                .passwordEncoder(passwordEncoder);
     }
 }
