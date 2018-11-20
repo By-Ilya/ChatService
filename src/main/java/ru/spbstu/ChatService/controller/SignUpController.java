@@ -1,19 +1,12 @@
 package ru.spbstu.ChatService.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.spbstu.ChatService.domain.Role;
 import ru.spbstu.ChatService.domain.User;
 import ru.spbstu.ChatService.repository.UserRepository;
-import ru.spbstu.ChatService.service.MailSender;
 import ru.spbstu.ChatService.service.UserService;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.UUID;
 
 
 @Controller
@@ -24,12 +17,6 @@ public class SignUpController {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private MailSender mailSender;
 
     @GetMapping("/signup")
     public String showSignOutPage() {
@@ -61,24 +48,8 @@ public class SignUpController {
             return "signup";
         }
 
-        user.setLogin(username);
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setActive(false);
-        user.setRoles(Collections.singleton(Role.OPERATOR));
-        user.setActivationCode(UUID.randomUUID().toString());
-
-        String message = String.format(
-                "Hello, %s! \n" +
-                        "Welcome to Spring Web Chat! To activate your account, please, visit next link: " +
-                        "http://localhost:8080/activate/%s",
-                user.getLogin(), user.getActivationCode()
-        );
-
-        mailSender.sendMail(user.getEmail(), "[Spring Web Chat] Activation code", message);
-
-        long userId = userRepository.save(user).getId();
-        System.out.println("Add user id: " + userId);
+        long id = userService.addNewUser(user, username, email, password);
+        System.out.println("Add user id: " + id);
 
         model.addAttribute("message", "Please, visit your e-mail to activate account.");
 

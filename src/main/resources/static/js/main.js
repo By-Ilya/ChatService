@@ -188,20 +188,23 @@ function onMessageReceived(payload) {
     } else if (message.type === 'LEAVE') {
         messageElement.classList.add('event-message');
         message.content = message.sender + ' left!';
+    } else if (message.type === 'NEW_DIALOG') {
+        messageElement.classList.add('event-message');
+        message.content = 'The dialogue is over! A new dialogue begins.'
     } else {
-        messageElement.classList.add('chat-message');
+            messageElement.classList.add('chat-message');
 
-        let avatarElement = document.createElement('i');
-        let avatarText = document.createTextNode(message.sender[0]);
-        avatarElement.appendChild(avatarText);
-        avatarElement.style['background-color'] = getAvatarColor(message.sender);
+            let avatarElement = document.createElement('i');
+            let avatarText = document.createTextNode(message.sender[0]);
+            avatarElement.appendChild(avatarText);
+            avatarElement.style['background-color'] = getAvatarColor(message.sender);
 
-        messageElement.appendChild(avatarElement);
+            messageElement.appendChild(avatarElement);
 
-        let usernameElement = document.createElement('span');
-        let usernameText = document.createTextNode(message.sender);
-        usernameElement.appendChild(usernameText);
-        messageElement.appendChild(usernameElement);
+            let usernameElement = document.createElement('span');
+            let usernameText = document.createTextNode(message.sender);
+            usernameElement.appendChild(usernameText);
+            messageElement.appendChild(usernameElement);
     }
 
     let textElement = document.createElement('p');
@@ -337,7 +340,7 @@ function sendInviteByEmail() {
     }
     else {
         document.getElementById('emptyEmail').classList.add('hidden');
-        
+
         let chatMessage = {
             sender: username,
             sendTo: email,
@@ -349,6 +352,15 @@ function sendInviteByEmail() {
         alert('Invitation to ' + email + ' sent!');
         document.getElementById("email").value = '';
     }
+}
+
+function changeDialog() {
+    let chatMessage = {
+        sender: username,
+        type: 'NEW_DIALOG'
+    };
+
+    stompClient.send(topic + '/sendMessage', {}, JSON.stringify(chatMessage));
 }
 
 //--------------------------------------------------------------------------------------------------------------------//

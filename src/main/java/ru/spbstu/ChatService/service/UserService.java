@@ -1,35 +1,75 @@
 package ru.spbstu.ChatService.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.spbstu.ChatService.domain.Invitation;
+import ru.spbstu.ChatService.domain.Role;
 import ru.spbstu.ChatService.domain.User;
 import ru.spbstu.ChatService.repository.UserRepository;
 
+import java.util.Collections;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class UserService implements UserDetailsService {
 
+    @Value("${spring.rabbitmq.host}")
+    private String host;
+
+    @Value("${spring.rabbitmq.port}")
+    private int port;
+
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MailSender mailSender;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.getByLogin(username);
 
-        if (!user.getActivationCode().equals("activated")) {
-            return null;
+        if (user != null) {
+            if (user.getActivationCode().equals("activated")) {
+                user.setActive(true);
+                userRepository.save(user);
+            }
         }
-
-        user.setActive(true);
-        userRepository.save(user);
 
         return user;
     }
 
+
+    public long addNewUser(User user, String username, String email, String password) {
+        user.setLogin(username);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setActive(false);
+        user.setRoles(Collections.singleton(Role.OPERATOR));
+        user.setActivationCode(UUID.randomUUID().toString());
+
+        String message = String.format(
+                "Hello, %s! \nWelcome to Spring Web Chat! " +
+                        "To activate your account, please, visit next link: http://%s:%d/activate/%s",
+                user.getLogin(), host, port, user.getActivationCode()
+        );
+
+        mailSender.sendMail(user.getEmail(), "[Spring Web Chat] Activation code", message);
+
+        long userId = userRepository.save(user).getId();
+
+        return userId;
+    }
 
     public boolean activateUser(String activationCode) {
         User user = userRepository.getByActivationCode(activationCode);
@@ -44,7 +84,22 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
-    public String generateNickname() {
+    public User loadUserByInvitation(Invitation invitation) {
+        User user = userRepository.getByEmail(invitation.getEmail());
+
+        if (user == null) {
+            user = new User();
+            user.setLogin(generateNickname());
+            user.setEmail(invitation.getEmail());
+            user.setRoles(Collections.singleton(Role.ANONYMOUS));
+            user.setActivationCode("activated");
+            user.setActive(true);
+        }
+
+        return user;
+    }
+
+    private String generateNickname() {
         String username;
 
         char[] vowels = {'a', 'e', 'i', 'o', 'y'};

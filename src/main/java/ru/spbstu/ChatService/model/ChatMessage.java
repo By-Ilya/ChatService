@@ -13,6 +13,7 @@ import java.util.Date;
 public class ChatMessage {
     public enum MessageType {
         CHAT,
+        NEW_DIALOG,
         JOIN,
         INVITE,
         INVITE_BY_EMAIL,

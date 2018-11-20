@@ -1,6 +1,9 @@
 package ru.spbstu.ChatService.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -31,11 +34,11 @@ public class Message implements Serializable {
     private User author;
 
     @ManyToOne
-    private Session session;
+    private Dialog dialog;
 
-    public Message(String text, Date time, Session session_id) {
+    public Message(String text, Date time, Dialog dialog) {
         this.text = text;
         this.dateTime = time;
-        this.session = session_id;
+        this.dialog = dialog;
     }
 }

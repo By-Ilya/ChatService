@@ -8,11 +8,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
-import ru.spbstu.ChatService.domain.User;
 import ru.spbstu.ChatService.model.ChatMessage;
-import ru.spbstu.ChatService.repository.UserRepository;
-
-import javax.validation.constraints.Null;
 
 import static java.lang.String.format;
 

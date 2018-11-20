@@ -22,9 +22,12 @@ public class CustomizeLogoutSuccessHandler implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
-        User user = userRepository.getByLogin(authentication.getName());
-        user.setActive(false);
-        userRepository.save(user);
+
+        if (authentication != null) {
+            User user = userRepository.getByLogin(authentication.getName());
+            user.setActive(false);
+            userRepository.save(user);
+        }
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.sendRedirect("/?logout");

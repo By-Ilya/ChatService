@@ -1,7 +1,6 @@
 package ru.spbstu.ChatService.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.CustomAutowireConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -36,7 +35,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/", "/signup", "/activate/*", "/invite/*", "/ws/**", "/operator/**").permitAll()
+                    .antMatchers("/", "/signup", "/activate/*", "/invite/*").permitAll()
+                    .antMatchers("/ws/**").authenticated()
                     .anyRequest().authenticated()
                     .and()
                 .formLogin()
