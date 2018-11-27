@@ -42,7 +42,10 @@ function connectToInviteForm() {
     stompClient.connect({}, onConnectedToForm, onError);
 }
 
-connectToInviteForm();
+
+if (!currentSubscription) {
+    connectToInviteForm();
+}
 
 
 function onConnectedToForm() {
@@ -266,6 +269,7 @@ function logout() {
         sender: username,
         type: 'LEAVE'
     };
+    currentSubscription.unsubscribe();
     stompClient.send(topic + '/sendMessage', {}, JSON.stringify(chatMessage));
 }
 
