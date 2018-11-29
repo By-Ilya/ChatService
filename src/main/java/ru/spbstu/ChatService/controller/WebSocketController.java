@@ -26,10 +26,10 @@ import static java.lang.String.format;
 @Controller
 public class WebSocketController {
 
-    @Value("${spring.rabbitmq.host}")
+    @Value("${plintum.chatservice.host}")
     private String host;
 
-    @Value("${spring.rabbitmq.port}")
+    @Value("${plintum.chatservice.port}")
     private int port;
 
     @Autowired
