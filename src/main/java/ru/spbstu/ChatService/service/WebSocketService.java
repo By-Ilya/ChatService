@@ -15,10 +15,10 @@ import java.util.UUID;
 @Service
 public class WebSocketService {
 
-    @Value("${spring.rabbitmq.host}")
+    @Value("${plintum.chatservice.host}")
     private String host;
 
-    @Value("${spring.rabbitmq.port}")
+    @Value("${plintum.chatservice.port}")
     private int port;
 
     @Autowired
