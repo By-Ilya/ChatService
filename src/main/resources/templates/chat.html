@@ -52,11 +52,11 @@
 
     <div id="chat-container" class="hidden">
         <div class="chat-header">
-            <form th:action="@{/logout}" class="user-container" method="post">
-                <button type="submit" onclick="logout()">Logout</button>
-            </form>
+            <!--<form th:action="@{/logout}" class="user-container" method="post">-->
+                <!--<button type="submit" onclick="logout()">Logout</button>-->
+            <!--</form>-->
             <form th:if="${role}=='operator' or ${role}=='user'" class="user-container">
-                <button type="button" onclick="back()">Back</button>
+                <button type="button" onclick="quit()">Quit</button>
             </form>
             <form id="invite-users" th:if="${role}=='operator'" class="user-container">
                 <button type="button" onclick="openUsersList()">Invite user</button>

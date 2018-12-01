@@ -15,7 +15,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "utterances")
+@Table(name = "messages")
 public class Message implements Serializable {
 
     @Id

@@ -126,7 +126,12 @@ button.accent {
 
 #invite-container {
     top: 190px;
-    max-width: 550px;
+    max-width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #fff;
+    box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+    max-height: 750px;
 }
 
 #login-page {
@@ -324,7 +329,7 @@ button.accent {
 
 .scrollbox {
     overflow: auto;
-    width: 400px;
+    width: 600px;
     max-height: 500px;
     margin: 30px auto;
 }

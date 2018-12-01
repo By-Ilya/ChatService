@@ -249,19 +249,22 @@ function getAvatarColor(messageSender) {
 }
 
 
-function back() {
-    let chatMessage = {
-        sender: username,
-        type: 'LEAVE'
-    };
-    stompClient.send(topic + '/sendMessage', {}, JSON.stringify(chatMessage));
-    currentSubscription.unsubscribe();
+function quit() {
+    let result = confirm("Are you want to quit this chat?");
+    if (result) {
+        let chatMessage = {
+            sender: username,
+            type: 'LEAVE'
+        };
+        stompClient.send(topic + '/sendMessage', {}, JSON.stringify(chatMessage));
+        currentSubscription.unsubscribe();
 
-    chatElement.classList.add('hidden');
-    messageArea.innerHTML = '';
-    inviteContainer.classList.remove('hidden');
+        chatElement.classList.add('hidden');
+        messageArea.innerHTML = '';
+        inviteContainer.classList.remove('hidden');
 
-    connectToInviteForm();
+        connectToInviteForm();
+    }
 }
 
 function logout() {
