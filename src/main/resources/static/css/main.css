@@ -16,18 +16,18 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 1rem;
     line-height: 1.58;
-    color: #333;
-    background-color: #f4f4f4;
+    color: #000080;
+    background-color: #9a67ea;
     height: 100%;
 }
 
 body:before {
-    height: 50%;
+    height: 40%;
     width: 100%;
     position: absolute;
     top: 0;
     left: 0;
-    background: #128ff2;
+    background: #320b86;
     content: "";
     z-index: 0;
 }
@@ -63,7 +63,7 @@ h1 {
 }
 
 a {
-    color: #128ff2;
+    color: #483D8B;
 }
 
 input {
@@ -93,16 +93,18 @@ button.default {
 }
 
 button.primary {
-    background-color: #128ff2;
+    background-color: #483D8B;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
     color: #fff;
 }
 
 button.accent {
-    background-color: #ff4743;
+    background-color: #673ab7;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
     color: #fff;
 }
+
+button.accent.username-submit {}
 
 .username-page-container {
     background: #fff;
@@ -125,13 +127,25 @@ button.accent {
 }
 
 #invite-container {
-    top: 190px;
-    max-width: 750px;
+    top: 30%;
+    max-width: 50%;
+    max-height: 80%;
+    height: 80%;
     margin-left: auto;
     margin-right: auto;
     background-color: #fff;
     box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
-    max-height: 750px;
+}
+
+#admin-container {
+    top: 30%;
+    max-width: 700px;
+}
+
+#user-edit-container {
+    top: 30%;
+    max-width: 700px;
+    max-height: 92%;
 }
 
 #login-page {
@@ -149,7 +163,7 @@ button.accent {
 
 #login-container {
     background: #fff;
-    box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+    box-shadow: 3px 4px 16px 1px rgba(0, 0, 0, 0.27);
     border-radius: 2px;
     width: 100%;
     max-width: 500px;
@@ -161,27 +175,7 @@ button.accent {
     min-height: 250px;
     position: absolute;
     top: 50%;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    margin-top: -160px;
-}
-
-#signout-container {
-    background: #fff;
-    box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
-    border-radius: 2px;
-    width: 100%;
-    max-width: 500px;
-    display: inline-block;
-    margin-top: 42px;
-    vertical-align: middle;
-    position: relative;
-    padding: 35px 55px 35px;
-    min-height: 250px;
-    position: absolute;
-    top: 50%;
-    left: 0;
+    left: 30%;
     right: 0;
     margin: 0 auto;
     margin-top: -160px;
@@ -189,14 +183,15 @@ button.accent {
 
 
 #chat-container {
-    max-width: 750px;
+    max-width: 50%;
+    max-height: 80%;
+    height: 80%;
     margin-left: auto;
     margin-right: auto;
     background-color: #fff;
     box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
     margin-top: 30px;
     height: calc(100% - 60px);
-    max-height: 750px;
     position: relative;
 }
 
@@ -298,7 +293,10 @@ button.accent {
 }
 
 #all-users-container {
-    top: 190px;
+    top: 30%;
+    height: 300px;
+    width: 620px;
+    overflow: auto;
 }
 
 .chat-header {
@@ -330,6 +328,12 @@ button.accent {
 .scrollbox {
     overflow: auto;
     width: 600px;
-    max-height: 500px;
+    max-height: 30%;
     margin: 30px auto;
+}
+
+.container {
+    width: 600px;
+    max-height: 400px;
+    overflow: auto;
 }

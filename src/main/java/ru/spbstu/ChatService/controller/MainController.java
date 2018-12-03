@@ -42,7 +42,7 @@ public class MainController {
         model.addAttribute("username", authentication.getName());
 
 
-        if (authentication.getAuthorities().toArray()[0].equals(Role.OPERATOR)) {
+        if (authentication.getAuthorities().toArray()[0].equals(Role.SEND_INVITATIONS_BY_EMAIL)) {
             model.addAttribute("role", "operator");
             return "chat";
         }

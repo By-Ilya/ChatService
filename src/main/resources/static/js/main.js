@@ -166,7 +166,6 @@ function onConnected() {
 
 function sendMessage(event) {
     let messageContent = messageInput.value.trim();
-    let date = new Date();
 
     if(messageContent && stompClient) {
         let chatMessage = {
@@ -225,7 +224,7 @@ function onMessageReceived(payload) {
 
 function postMessageTime(messageTime) {
     let dateTime = new Date(messageTime);
-    dateTime = dateTime.toLocaleString("ru-RU");
+    dateTime = dateTime.toLocaleString('ru-RU');
 
     let timeElement = document.createElement('li');
     timeElement.classList.add('time-message');
@@ -250,7 +249,7 @@ function getAvatarColor(messageSender) {
 
 
 function quit() {
-    let result = confirm("Are you want to quit this chat?");
+    let result = confirm("Are you sure you want to quit?");
     if (result) {
         let chatMessage = {
             sender: username,
@@ -307,14 +306,13 @@ function getUsersList() {
                 let userListArea = document.getElementById('userListArea');
                 for (let user of users) {
                     let userElement = document.createElement("li");
-                    let userLogin = user.login;
 
                     let userLoginButton = document.createElement('button');
                     userLoginButton.type = 'button';
                     userLoginButton.classList.add('button');
-                    userLoginButton.setAttribute('onclick', 'sendInvite(\'' + userLogin + '\')');
+                    userLoginButton.setAttribute('onclick', 'sendInvite(\'' + user.toString() + '\')');
 
-                    let userText = document.createTextNode(userLogin);
+                    let userText = document.createTextNode(user.toString());
 
                     userLoginButton.appendChild(userText);
                     userElement.appendChild(userLoginButton);

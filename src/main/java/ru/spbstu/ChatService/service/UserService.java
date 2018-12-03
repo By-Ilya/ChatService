@@ -55,7 +55,7 @@ public class UserService implements UserDetailsService {
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
         user.setActive(false);
-        user.setRoles(Collections.singleton(Role.OPERATOR));
+        user.setRoles(Collections.singleton(Role.SEND_INVITATIONS_BY_EMAIL));
         user.setActivationCode(UUID.randomUUID().toString());
 
         String message = String.format(
@@ -91,7 +91,7 @@ public class UserService implements UserDetailsService {
             user = new User();
             user.setLogin(generateNickname());
             user.setEmail(invitation.getEmail());
-            user.setRoles(Collections.singleton(Role.ANONYMOUS));
+            user.setRoles(Collections.singleton(Role.PARTICIPATE_BY_INVENTION));
             user.setActivationCode("activated");
             user.setActive(true);
         }

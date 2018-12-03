@@ -1,7 +1,6 @@
 package ru.spbstu.ChatService.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -25,12 +24,6 @@ import static java.lang.String.format;
 
 @Controller
 public class WebSocketController {
-
-    @Value("${plintum.chatservice.host}")
-    private String host;
-
-    @Value("${plintum.chatservice.port}")
-    private int port;
 
     @Autowired
     private WebSocketService webSocketService;

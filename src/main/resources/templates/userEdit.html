@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>User Editor</title>
+
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+</head>
+<body>
+    <div id="user-edit-container" class="username-page-container">
+        <h1>User editor</h1>
+        <form id="userEditor" method="post">
+            <div class="form-group">
+                <p>Username:</p>
+                <input type="text" id="username" th:value="${user.login}" class="form-control" />
+                <br>
+                <p>E-mail:</p>
+                <input type="email" id="email" th:value="${user.email}" class="form-control" />
+                <br>
+                <p>Roles:</p>
+                <form id="allRoles">
+                    <div th:each="role : ${roles}">
+                        <input type="checkbox" th:name="${role}" th:text="${role}" th:checked="${#sets.contains(user.roles, role)}" />
+                    </div>
+                </form>
+            </div>
+            <br>
+            <div class="form-group" align="right">
+                <button type="submit" class="accent username-submit">Update user data</button>
+            </div>
+            <div class="form-group" align="right">
+                <a th:href="@{/admin}">Back</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
