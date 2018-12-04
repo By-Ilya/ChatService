@@ -19,11 +19,11 @@
         </div>
 
         <div th:if="${role}=='operator'" id="operator-container">
+            <p><i>You've logged in as interviewer so you can create chat-rooms and invite experts there.</i></p>
             <div id="emptyRoomName" class="hidden">
                 <p class="error-event">Please, enter the chat-room name!</p>
             </div>
-            <p>You've logged in as interviewer so you can create chat-rooms and invite experts there. </p>
-            <p>First, enter the name of a new chat-room:</p>
+            <p>Enter the name of a new chat-room:</p>
             <form id="chatRoomForm" name="chatRoomForm">
                 <div class="form-group">
                     <input type="text" width="30%" id="newRoomName" placeholder="RoomID" autocomplete="off" class="form-control" />
@@ -35,11 +35,16 @@
         </div>
 
         <div>
-            <p> Here's your invitation room. Click on one of the invitations below to start the chat. </p>
+            <p><i>Here's your invitation room. Click on one of the invitations below to start the chat.</i> </p>
         </div>
 
-        <div>
-            <ul id="inventionArea" class="scrollbox">
+        <div th:if="${role}=='operator'" class="operator-scrollbox">
+            <ul id="inventionArea">
+            </ul>
+        </div>
+
+        <div th:if="${role}=='user'"  class="user-scrollbox">
+            <ul id="inventionArea">
             </ul>
         </div>
     </div>
@@ -66,16 +71,16 @@
                 <!--<button type="submit" onclick="logout()">Logout</button>-->
             <!--</form>-->
             <form th:if="${role}=='operator' or ${role}=='user'" class="user-container">
-                <button type="button" onclick="quit()">Quit</button>
+                <button type="button" class="accent" onclick="quit()">Quit</button>
             </form>
             <form id="invite-users" th:if="${role}=='operator'" class="user-container">
-                <button type="button" onclick="openUsersList()">Invite user</button>
-                <button type="button" onclick="changeDialog()">Start new dialog</button>
+                <button type="button" class="accent" onclick="openUsersList()">Invite user</button>
+                <button type="button" class="accent" onclick="changeDialog()">Start new dialog</button>
             </form>
-            <h2 align="left">Tools:</h2>
+            <h2 align="left"> <span th:text="${username}"></span> </h2>
         </div>
         <div class="chat-header">
-            <h2>Web Chat [<span th:text="${username}"></span>] [Room: <span id="room_id_display"></span>]</h2>
+            <h2>General topic of the chat is <b><span id="room_id_display"></span></b></h2>
         </div>
         <div class="connecting">
             Connecting...
@@ -100,14 +105,18 @@
         <form id="inviteForm" name="inviteForm">
             <input type="email" id="email" placeholder="E-mail" autocomplete="off" class="form-control" />
             <br><br>
-            <button type="button" onclick="sendInviteByEmail()">Invite by e-mail</button>
+            <div align="right">
+                <button type="button" class="accent" onclick="sendInviteByEmail()">Invite by e-mail</button>
+            </div>
         </form>
         <h2 class="title">All users online:</h2>
-        <div class="scrollbox">
+        <div class="all-users-scrollbox">
             <ul id="userListArea">
             </ul>
         </div>
-        <button type="button" onclick="closeUsersList()">Back to chat</button>
+        <div align="right">
+            <button type="button" class="accent" onclick="closeUsersList()">Back to chat</button>
+        </div>
     </div>
 
     <script th:src="@{/js/main.js}"></script>

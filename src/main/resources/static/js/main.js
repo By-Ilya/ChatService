@@ -71,18 +71,13 @@ function onInventionReceived(payload) {
 
         let buttonRoom = document.createElement('button');
         buttonRoom.type = 'button';
-        buttonRoom.classList.add('button');
+        buttonRoom.classList.add('default');
         buttonRoom.setAttribute('onclick', 'connectUser(\'' + message.sender + '\', \'' + message.content + '\')');
 
         let textRoom = document.createTextNode(message.content);
         buttonRoom.appendChild(textRoom);
 
-        let textElement = document.createElement('p');
-        let messageText = document.createTextNode('Вас пригласили в чат. Нажмите на название комнаты, чтобы войти.');
-        textElement.appendChild(messageText);
-
         inventionElement.appendChild(buttonRoom);
-        inventionElement.appendChild(textElement);
 
         inventionArea.appendChild(inventionElement);
         inventionArea.scrollTop = inventionArea.scrollHeight;
@@ -223,8 +218,10 @@ function onMessageReceived(payload) {
 }
 
 function postMessageTime(messageTime) {
-    let dateTime = new Date(messageTime);
-    dateTime = dateTime.toLocaleString('ru-RU');
+    //let dateTime = new Date(messageTime);
+    let dateTime = moment(messageTime);
+    dateTime = moment(dateTime).format("DD.MM.YYYY HH:mm:ss");
+    //dateTime = dateTime.toLocaleString('ru-RU');
 
     let timeElement = document.createElement('li');
     timeElement.classList.add('time-message');
@@ -309,7 +306,7 @@ function getUsersList() {
 
                     let userLoginButton = document.createElement('button');
                     userLoginButton.type = 'button';
-                    userLoginButton.classList.add('button');
+                    userLoginButton.classList.add('default');
                     userLoginButton.setAttribute('onclick', 'sendInvite(\'' + user.toString() + '\')');
 
                     let userText = document.createTextNode(user.toString());
