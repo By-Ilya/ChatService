@@ -50,26 +50,25 @@
     </div>
 
     <div th:if="${#sets.contains(userRoles, allRoles[0])}" id="anonymous-container" class="username-page-container">
-        <h2 class="title">Name: <span id="username" th:text="${username}"></span></h2>
-        <h2 class="title"> Room: <span id="currRoomName" th:text="${roomName}"></span></h2>
-        <p id="roomUID" th:text="${roomId}" class="hidden"></p>
-        <p class="chat-message">Click 'Connect' to connect to the chat-room:</p>
-        <form id="acceptInvite" name="acceptInvite">
-            <div class="form-group">
-                <button type="button" onclick="connectAnonymous()">Connect</button>
+        <h2 class="title" id="username" th:text="${username}"></h2>
+        <p th:if="${roomName}"><i>You have been invited to the chat </i><b><span id="currRoomName" th:text="${roomName}"></span></b></p>
+        <p id="roomUID" th:if="${roomId}" th:text="${roomId}" class="hidden"></p>
+        <p class="chat-message" th:if="${roomId}">Click <b>Connect</b> to connect to the chat-room.</p>
+        <form id="acceptInvite" name="acceptInvite" th:if="${roomId}">
+            <div class="form-group" align="right">
+                <button type="button" class="accent" onclick="connectAnonymous()">Connect</button>
             </div>
         </form>
         <form th:action="@{/logout}" method="post">
-            <button type="submit" onclick="logout()">Logout</button>
+            <div class="form-group" align="right">
+                <button type="submit" class="accent" onclick="logout()">Logout</button>
+            </div>
         </form>
     </div>
 
 
     <div id="chat-container" class="hidden">
         <div class="chat-header">
-            <!--<form th:action="@{/logout}" class="user-container" method="post">-->
-                <!--<button type="submit" onclick="logout()">Logout</button>-->
-            <!--</form>-->
             <form class="user-container">
                 <button type="button" class="accent" onclick="quit()">Quit</button>
             </form>
