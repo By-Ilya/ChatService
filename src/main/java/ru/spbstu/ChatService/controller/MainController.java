@@ -39,15 +39,14 @@ public class MainController {
             return "login";
         }
 
-        model.addAttribute("username", authentication.getName());
-
-
-        if (authentication.getAuthorities().toArray()[0].equals(Role.SEND_INVITATIONS_BY_EMAIL)) {
-            model.addAttribute("role", "operator");
-            return "chat";
+        if (authentication.getAuthorities().contains(Role.ADMINISTRATE)) {
+            return "redirect:/admin";
         }
 
-        model.addAttribute("role", "user");
+        model.addAttribute("username", authentication.getName());
+        model.addAttribute("userRoles", authentication.getAuthorities().toArray());
+        model.addAttribute("allRoles", Role.values());
+
         return "chat";
     }
 
@@ -75,7 +74,8 @@ public class MainController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         model.addAttribute("username", user.getLogin());
-        model.addAttribute("role", "anonymous");
+        model.addAttribute("userRoles", authentication.getAuthorities().toArray());
+        model.addAttribute("allRoles", Role.values());
         model.addAttribute("roomId", session.getSessionUID());
         model.addAttribute("roomName", session.getName());
 

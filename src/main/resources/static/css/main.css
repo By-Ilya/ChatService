@@ -141,14 +141,49 @@ button.accent.username-submit {}
 }
 
 #admin-container {
-    top: 30%;
-    max-width: 700px;
+    top: 29%;
+    max-width: 70%;
+    height: calc(100% - 45px);
+    max-height: 100%;
+}
+
+#all-users-container {
+    top: 29%;
+    max-width: 100%;
+    width: 100%;
+    height: calc(100% - 140px);
+    max-height: 100%;
+    overflow: auto;
+}
+
+#online-users-container {
+    top: 29%;
+    max-width: 50%;
+    width: 50%;
+    height: calc(100% - 140px);
+    max-height: 100%;
+    overflow: auto;
+}
+
+#users-list {
+    width: 600px;
+    max-width: 600px;
+    overflow: auto;
 }
 
 #user-edit-container {
-    top: 30%;
-    max-width: 700px;
-    max-height: 92%;
+    top: 29%;
+    max-width: 50%;
+    height: calc(100% - 45px);
+    max-height: 100%;
+}
+
+#user-editor {
+    top: 29%;
+    max-width: 100%;
+    width: 100%;
+    max-height: 100%;
+    overflow: auto;
 }
 
 #login-page {
@@ -294,14 +329,6 @@ button.accent.username-submit {}
     width: calc(100% - 85px);
 }
 
-#all-users-container {
-    top: 29%;
-    max-width: 50%;
-    width: 50%;
-    height: calc(100% - 45px);
-    max-height: 100%;
-}
-
 .chat-header {
     text-align: center;
     padding: 15px;
@@ -350,10 +377,4 @@ button.accent.username-submit {}
     max-height: 100%;
     height: calc(100% - 160px);
     margin: 10px auto;
-}
-
-.container {
-    width: 600px;
-    max-height: 400px;
-    overflow: auto;
 }

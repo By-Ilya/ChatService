@@ -93,7 +93,7 @@ public class UserService implements UserDetailsService {
             user.setEmail(invitation.getEmail());
             user.setRoles(Collections.singleton(Role.PARTICIPATE_BY_INVENTION));
             user.setActivationCode("activated");
-            user.setActive(true);
+            user.setActive(false);
         }
 
         return user;

@@ -89,8 +89,6 @@ function onInventionReceived(payload) {
 function connectOperator() {
     roomName = document.getElementById('newRoomName').value;
 
-    document.getElementById('invite-users').classList.remove('hidden');
-
     if (roomName === "") {
         document.getElementById('emptyRoomName').classList.remove('hidden')
     }
@@ -103,10 +101,6 @@ function connectOperator() {
 function connectUser(newRoomId, newRoomName) {
     roomId = newRoomId;
     roomName = newRoomName;
-
-    if (document.getElementById('invite-users') != null) {
-        document.getElementById('invite-users').classList.add('hidden');
-    }
 
     connectToChat();
 }
@@ -277,7 +271,7 @@ messageForm.addEventListener('submit', sendMessage, true);
 
 //--------------------------------------------------------------------------------------------------------------------//
 
-let allUsersContainer = document.querySelector('#all-users-container');
+let allUsersContainer = document.querySelector('#online-users-container');
 let userListArea = document.querySelector('#userListArea');
 
 function openUsersList() {
