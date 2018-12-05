@@ -8,7 +8,15 @@
 </head>
 <body>
     <div id="admin-container" class="username-page-container">
-        <h1>List of users</h1>
+        <div class="chat-header">
+            <form th:action="@{/logout}" class="user-container" method="post">
+                <button type="submit" class="accent">Logout</button>
+            </form>
+            <form action="/admin/changePassword" class="user-container">
+                <button type="submit" class="accent">Change password</button>
+            </form>
+            <h2 class="title">List of users</h2>
+        </div>
 
         <div id="all-users-container">
             <table id="users-list">
@@ -29,11 +37,6 @@
             </table>
         </div>
         <br>
-        <div class="form-group" align="right">
-            <form th:action="@{/logout}" class="user-container" method="post">
-                <button type="submit" class="accent">Logout</button>
-            </form>
-        </div>
     </div>
 </body>
 </html>

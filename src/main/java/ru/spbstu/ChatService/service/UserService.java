@@ -19,17 +19,17 @@ import java.util.UUID;
 @Service
 public class UserService implements UserDetailsService {
 
-    @Value("${plintum.chatservice.host}")
-    private String host;
-
-    @Value("${plintum.chatservice.port}")
-    private int port;
+    @Value("${plintum.chatservice.url}")
+    private String url;
 
     @Autowired
     private UserRepository userRepository;
 
+    // @Autowired
+    // private MailSender mailSender;
+
     @Autowired
-    private MailSender mailSender;
+    private SendMailJavaAPI mailSender;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -60,8 +60,8 @@ public class UserService implements UserDetailsService {
 
         String message = String.format(
                 "Hello, %s! \nWelcome to Spring Web Chat! " +
-                        "To activate your account, please, visit next link: http://%s:%d/activate/%s",
-                user.getLogin(), host, port, user.getActivationCode()
+                        "To activate your account, please, visit next link: http://%s/activate/%s",
+                user.getLogin(), url, user.getActivationCode()
         );
 
         mailSender.sendMail(user.getEmail(), "[Spring Web Chat] Activation code", message);

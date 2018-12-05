@@ -23,6 +23,12 @@ public class StartupStopKeeper {
     @Autowired
     private UserRepository userRepository;
 
+    @Value("${plintum.chatservice.admin.login}")
+    private String adminLogin;
+
+    @Value("${plintum.chatservice.admin.password}")
+    private String adminPassword;
+
     @Value("${spring.mail.username}")
     private String email;
 
@@ -38,9 +44,9 @@ public class StartupStopKeeper {
 
             PasswordEncoder passwordEncoder = getPasswordEncoder();
 
-            administrator.setLogin("admin");
+            administrator.setLogin(adminLogin);
             administrator.setEmail(email);
-            administrator.setPassword(passwordEncoder.encode("admin"));
+            administrator.setPassword(passwordEncoder.encode(adminPassword));
             administrator.setRoles(Collections.singleton(Role.ADMINISTRATE));
             administrator.setActivationCode("activated");
             administrator.setActive(false);

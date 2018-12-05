@@ -29,6 +29,11 @@ public class AdminController {
         return "admin";
     }
 
+    @GetMapping("/changePassword")
+    public String showChangePasswordPage() {
+        return "adminPassword";
+    }
+
     @GetMapping("{user}")
     public String userEditFrom(@PathVariable User user, Model model) {
         model.addAttribute("user", user);

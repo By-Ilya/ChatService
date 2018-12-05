@@ -15,11 +15,8 @@ import java.util.UUID;
 @Service
 public class WebSocketService {
 
-    @Value("${plintum.chatservice.host}")
-    private String host;
-
-    @Value("${plintum.chatservice.port}")
-    private int port;
+    @Value("${plintum.chatservice.url}")
+    private String url;
 
     @Autowired
     private SessionRepository sessionRepository;
@@ -27,8 +24,11 @@ public class WebSocketService {
     @Autowired
     private InvitationRepository invitationRepository;
 
+    // @Autowired
+    // private MailSender mailSender;
+
     @Autowired
-    private MailSender mailSender;
+    private SendMailJavaAPI mailSender;
 
     public void sendInviteByEmail(String roomId, ChatMessage message) {
         Session session = sessionRepository.getBySessionUID(roomId);
@@ -39,8 +39,8 @@ public class WebSocketService {
                 "Hello! \n" +
                         "You were invited to the chat-room '%s' by the operator '%s'. " +
                         "To accept the invitation, please, visit next link: " +
-                        "http://%s:%d/invite/%s",
-                message.getContent(), message.getSender(), host, port, invitation.getInvitationUID()
+                        "http://%s/invite/%s",
+                message.getContent(), message.getSender(), url, invitation.getInvitationUID()
         );
 
         mailSender.sendMail(message.getSendTo(), "[Spring Web Chat] New invitation", emailMessage);
