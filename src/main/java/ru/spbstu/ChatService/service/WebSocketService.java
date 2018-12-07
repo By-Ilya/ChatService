@@ -18,17 +18,20 @@ public class WebSocketService {
     @Value("${plintum.chatservice.url}")
     private String url;
 
+    @Value("${spring.mail.properties.mail.smtp.auth}")
+    private boolean isRequiredAuth;
+
     @Autowired
     private SessionRepository sessionRepository;
 
     @Autowired
     private InvitationRepository invitationRepository;
 
-    // @Autowired
-    // private MailSender mailSender;
+    @Autowired
+    private MailSender mailSender;
 
     @Autowired
-    private SendMailJavaAPI mailSender;
+    private SendMailJavaAPI mailJavaAPI;
 
     public void sendInviteByEmail(String roomId, ChatMessage message) {
         Session session = sessionRepository.getBySessionUID(roomId);
@@ -39,10 +42,15 @@ public class WebSocketService {
                 "Hello! \n" +
                         "You were invited to the chat-room '%s' by the operator '%s'. " +
                         "To accept the invitation, please, visit next link: " +
-                        "http://%s/invite/%s",
+                        "%s/invite/%s",
                 message.getContent(), message.getSender(), url, invitation.getInvitationUID()
         );
 
-        mailSender.sendMail(message.getSendTo(), "[Spring Web Chat] New invitation", emailMessage);
+        if (isRequiredAuth) {
+            mailSender.sendMail(message.getSendTo(), "[Spring Web Chat] New invitation", emailMessage);
+        }
+        else {
+            mailJavaAPI.sendMail(message.getSendTo(), "[Spring Web Chat] New invitation", emailMessage);
+        }
     }
 }

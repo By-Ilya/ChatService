@@ -129,62 +129,50 @@ button.accent.username-submit {}
     margin-top: -160px;
 }
 
-#invite-container {
-    top: 29%;
+.inside-container {
+    border-radius: 2px;
     max-width: 50%;
     max-height: 100%;
-    height: calc(100% - 45px);
+    padding: 35px 55px 35px;
     margin-left: auto;
     margin-right: auto;
     background-color: #fff;
     box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
-}
-
-#admin-container {
-    top: 29%;
-    max-width: 70%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    bottom: 2%;
     height: calc(100% - 45px);
-    max-height: 100%;
+    position: relative;
+    overflow: auto;
 }
 
-#all-users-container {
-    top: 29%;
+.data-container {
     max-width: 100%;
     width: 100%;
-    height: calc(100% - 140px);
-    max-height: 100%;
+    height: 80%;
+    max-height: 80%;
     overflow: auto;
+    padding: 10px;
 }
 
 #online-users-container {
-    top: 29%;
+    border-radius: 2px;
     max-width: 50%;
-    width: 50%;
-    height: calc(100% - 140px);
     max-height: 100%;
-    overflow: auto;
-}
-
-#users-list {
-    width: 600px;
-    max-width: 600px;
-    overflow: auto;
-}
-
-#user-edit-container {
-    top: 29%;
-    max-width: 50%;
+    padding: 35px 55px 35px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #fff;
+    box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+    margin-top: 2%;
+    margin-bottom: 2%;
+    bottom: 2%;
+    top: 1%;
     height: calc(100% - 45px);
-    max-height: 100%;
-}
-
-#user-editor {
-    top: 29%;
-    max-width: 100%;
-    width: 100%;
-    max-height: 100%;
+    position: absolute;
     overflow: auto;
 }
+
 
 #login-page {
     text-align: center;
@@ -221,15 +209,19 @@ button.accent.username-submit {}
 
 
 #chat-container {
+    border-radius: 2px;
     max-width: 50%;
     max-height: 100%;
     margin-left: auto;
     margin-right: auto;
     background-color: #fff;
     box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
-    margin-top: 30px;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    bottom: 2%;
     height: calc(100% - 45px);
     position: relative;
+    overflow: auto;
 }
 
 #chat-container #messageForm {
@@ -340,6 +332,12 @@ button.accent.username-submit {}
     font-weight: 500;
 }
 
+#chat-topic {
+    margin: 0;
+    font-weight: 500;
+    overflow: auto;
+}
+
 .connecting {
     padding-top: 5px;
     text-align: center;
@@ -355,26 +353,13 @@ button.accent.username-submit {}
     word-wrap: break-word;
 }
 
-.operator-scrollbox {
-    overflow: auto;
+table {
     width: 100%;
-    max-height: 100%;
-    height: calc(100% - 360px);
-    margin: 10px auto;
+    align-self: center;
+    border-collapse: collapse;
 }
 
-.all-users-scrollbox {
-    overflow: auto;
-    width: 100%;
-    max-height: 100%;
-    height: calc(100% - 300px);
-    margin: 10px auto;
-}
-
-.user-scrollbox {
-    overflow: auto;
-    width: 100%;
-    max-height: 100%;
-    height: calc(100% - 160px);
-    margin: 10px auto;
+table td, th {
+    padding: 5px;
+    border: 2px solid #320b86;
 }

@@ -28,6 +28,7 @@ public class SendMailJavaAPI {
             msg.addRecipient(Message.RecipientType.TO, new InternetAddress(emailTo));
             msg.setSubject(subject);
             msg.setText(message);
+            Transport.send(msg);
             System.out.println("Email sent successfully!");
         }
 

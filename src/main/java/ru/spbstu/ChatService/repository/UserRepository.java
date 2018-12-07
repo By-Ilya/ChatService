@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface UserRepository extends CrudRepository<User, Long> {
 
-    @Query("SELECT u.login FROM User u WHERE u.active = true")
+    @Query("SELECT u.login FROM User u WHERE u.active = true and u.login <> 'admin'")
     List<User> getOnlineUsers();
 
-    @Query("SELECT u FROM User u")
+    @Query("SELECT u FROM User u WHERE u.login <> 'admin'")
     List<User> getAllUsers();
 
     User getByLogin(String name);

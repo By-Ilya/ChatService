@@ -7,7 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/main.css}" />
 </head>
 <body>
-    <div id="admin-container" class="username-page-container">
+    <div id="admin-container" class="inside-container">
         <div class="chat-header">
             <form th:action="@{/logout}" class="user-container" method="post">
                 <button type="submit" class="accent">Logout</button>
@@ -15,10 +15,15 @@
             <form action="/admin/changePassword" class="user-container">
                 <button type="submit" class="accent">Change password</button>
             </form>
+            <form action="/admin" class="user-container">
+                <button type="submit" class="accent">Refresh</button>
+            </form>
             <h2 class="title">List of users</h2>
         </div>
 
-        <div id="all-users-container">
+        <div id="all-users-container" class="data-container">
+            <p><i>Hello, <b>admin</b>! In this page you can view a list of all users, edit their data and assign authorities.
+                Optionally, you can also change your password by clicking on the <b>"Change password"</b> button at the top of the page.</i></p>
             <table id="users-list">
                 <thead>
                     <tr align="left">
@@ -29,14 +34,16 @@
                 </thead>
                 <tbody>
                     <tr th:each="user : ${users}">
-                        <td th:text="${user.login}"></td>
-                        <td th:text="${user.roles}"></td>
-                        <td><a th:href="@{/admin/{userId} (userId=${user.id})}">Edit</a></td>
+                        <td th:text="${user.login}" width="30%"></td>
+                        <td th:text="${user.roles}" width="50%"></td>
+                        <td width="20%"><a th:href="@{/admin/{userId} (userId=${user.id})}">Edit</a></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <br>
     </div>
+
+    <script th:inline="javascript" th:if="${param.userChanged}">alert('User data successfully changed!')</script>
+    <script th:inline="javascript" th:if="${param.passwordChanged}">alert('Admin password successfully changed!')</script>
 </body>
 </html>

@@ -2,6 +2,7 @@ package ru.spbstu.ChatService.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +23,12 @@ public class AdminController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @GetMapping
     public String showAdminPage(Model model) {
-        model.addAttribute("users", userRepository.findAll());
+        model.addAttribute("users", userRepository.getAllUsers());
 
         return "admin";
     }
@@ -32,6 +36,29 @@ public class AdminController {
     @GetMapping("/changePassword")
     public String showChangePasswordPage() {
         return "adminPassword";
+    }
+
+    @PostMapping("/changePassword")
+    public String changeAdminPassword(Model model,
+                                      @RequestParam String prevPassword,
+                                      @RequestParam String newPassword) {
+        if (prevPassword.isEmpty() || newPassword.isEmpty()) {
+            model.addAttribute("message", "Please, enter all fields!");
+
+            return "adminPassword";
+        }
+
+        User administrator = userRepository.getByLogin("admin");
+        if (!passwordEncoder.matches(prevPassword, administrator.getPassword())) {
+            model.addAttribute("message", "Incorrect previous password!");
+
+            return "adminPassword";
+        }
+
+        administrator.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(administrator);
+
+        return "redirect:/admin?passwordChanged";
     }
 
     @GetMapping("{user}")
@@ -61,6 +88,6 @@ public class AdminController {
 
         userRepository.save(user);
 
-        return "redirect:/admin";
+        return "redirect:/admin?userChanged";
     }
 }

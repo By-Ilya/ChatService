@@ -22,14 +22,17 @@ public class UserService implements UserDetailsService {
     @Value("${plintum.chatservice.url}")
     private String url;
 
+    @Value("${spring.mail.properties.mail.smtp.auth}")
+    private boolean isRequiredAuth;
+
     @Autowired
     private UserRepository userRepository;
 
-    // @Autowired
-    // private MailSender mailSender;
+    @Autowired
+    private MailSender mailSender;
 
     @Autowired
-    private SendMailJavaAPI mailSender;
+    private SendMailJavaAPI mailJavaAPI;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -60,11 +63,16 @@ public class UserService implements UserDetailsService {
 
         String message = String.format(
                 "Hello, %s! \nWelcome to Spring Web Chat! " +
-                        "To activate your account, please, visit next link: http://%s/activate/%s",
+                        "To activate your account, please, visit next link: %s/activate/%s",
                 user.getLogin(), url, user.getActivationCode()
         );
 
-        mailSender.sendMail(user.getEmail(), "[Spring Web Chat] Activation code", message);
+        if (isRequiredAuth) {
+            mailSender.sendMail(user.getEmail(), "[Spring Web Chat] Activation code", message);
+        }
+        else {
+            mailJavaAPI.sendMail(user.getEmail(), "[Spring Web Chat] Activation code", message);
+        }
 
         long userId = userRepository.save(user).getId();
 

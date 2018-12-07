@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
-    <title>Web Chat</title>
+    <title>Spring Web Chat</title>
     <link rel="stylesheet" th:href="@{/css/main.css}" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
@@ -10,58 +10,68 @@
 </head>
 
 <body>
-    <div id="invite-container" class="username-page-container" th:if="${not #sets.contains(userRoles, allRoles[0])}">
-        <div class="chat-header" th:if="${#sets.contains(userRoles, allRoles[1])}">
+    <div id="invite-container" class="inside-container"
+         th:if="${#sets.contains(userRoles, allRoles[1])} or ${#sets.contains(userRoles, allRoles[3])}">
+        <div class="chat-header">
             <form th:action="@{/logout}" class="user-container" method="post">
                 <button type="submit" class="accent" onclick="logout()">Logout</button>
             </form>
             <h2 class="title"> Welcome, <span id="username" th:text="${username}"></span>!</h2>
         </div>
 
-        <div th:if="${#sets.contains(userRoles, allRoles[3])}" id="operator-container">
-            <p><i>You've logged in as interviewer so you can create chat-rooms and invite experts there.</i></p>
-            <div id="emptyRoomName" class="hidden">
-                <p class="error-event">Please, enter the chat-room name!</p>
+        <div class="data-container">
+            <div th:if="${#sets.contains(userRoles, allRoles[3])}" id="operator-container">
+                <p><i>You've logged in as interviewer so you can create chat-rooms and invite experts there.</i></p>
+                <div id="emptyRoomName" class="hidden">
+                    <p class="error-event">Please, enter the chat-room name!</p>
+                </div>
+                <p>Enter the name of a new chat-room:</p>
+                <form id="chatRoomForm" name="chatRoomForm">
+                    <div class="form-group">
+                        <input type="text" width="30%" id="newRoomName" placeholder="RoomID" autocomplete="off"
+                               class="form-control" />
+                    </div>
+                    <div class="form-group" align="right">
+                        <button type="button" class="accent" onclick="connectOperator()">Create new chat-room</button>
+                    </div>
+                </form>
             </div>
-            <p>Enter the name of a new chat-room:</p>
-            <form id="chatRoomForm" name="chatRoomForm">
-                <div class="form-group">
-                    <input type="text" width="30%" id="newRoomName" placeholder="RoomID" autocomplete="off" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <button type="button" class="accent" onclick="connectOperator()">Create new chat-room</button>
-                </div>
-            </form>
-        </div>
 
-        <div th:if="${#sets.contains(userRoles, allRoles[1])}">
-            <p><i>Here's your invitation room. Click on one of the invitations below to start the chat.</i> </p>
-        </div>
+            <div th:if="${#sets.contains(userRoles, allRoles[1])}">
+                <p><i>Here's your invitation room. Click on one of the invitations below to start the chat.</i> </p>
+            </div>
 
-        <div th:if="${#sets.contains(userRoles, allRoles[3])}" class="operator-scrollbox">
-            <ul id="inventionArea">
-            </ul>
-        </div>
-
-        <div th:if="${#sets.contains(userRoles, allRoles[1])}" class="user-scrollbox">
-            <ul id="inventionArea">
-            </ul>
+            <div th:if="${#sets.contains(userRoles, allRoles[1])}">
+                <ul id="inventionArea">
+                    <li th:if="${roomId} and ${roomName}">
+                        <button type="button" class="default" th:text="${roomName}"
+                                th:onclick="'connectUser(\''+ ${roomId} + '\', \'' + ${roomName} + '\')'"></button></li>
+                </ul>
+            </div>
         </div>
     </div>
 
-    <div th:if="${#sets.contains(userRoles, allRoles[0])}" id="anonymous-container" class="username-page-container">
-        <h2 class="title" id="username" th:text="${username}"></h2>
-        <p th:if="${roomName}"><i>You have been invited to the chat </i><b><span id="currRoomName" th:text="${roomName}"></span></b></p>
+    <div th:if="${#sets.contains(userRoles, allRoles[0])} and ${not #sets.contains(userRoles, allRoles[1])}"
+         id="anonymous-container" class="username-page-container">
+        <div class="chat-header">
+            <form class="user-container" th:action="@{/logout}" method="post">
+                <button type="submit" class="accent" onclick="logout()">Logout</button>
+            </form>
+            <h2 class="title" align="left" id="username" th:text="${username}"></h2>
+        </div>
+
+        <p th:if="${roomName}"><i>You have been invited to the chat</i>
+            <b><span id="currRoomName" th:text="${roomName}"></span></b></p>
         <p id="roomUID" th:if="${roomId}" th:text="${roomId}" class="hidden"></p>
-        <p class="chat-message" th:if="${roomId}">Click <b>Connect</b> to connect to the chat-room.</p>
+
+        <p th:if="${roomId}">Click <b>Connect</b> to connect to the chat-room.</p>
+
+        <p th:if="${roomId} == null"><i>You have closed the tab and unfortunately the connection with the chat-room
+            has been lost. Please <b>log out</b> of the account and follow the invitation link from the e-mail again.</i></p>
+
         <form id="acceptInvite" name="acceptInvite" th:if="${roomId}">
             <div class="form-group" align="right">
                 <button type="button" class="accent" onclick="connectAnonymous()">Connect</button>
-            </div>
-        </form>
-        <form th:action="@{/logout}" method="post">
-            <div class="form-group" align="right">
-                <button type="submit" class="accent" onclick="logout()">Logout</button>
             </div>
         </form>
     </div>
@@ -78,16 +88,19 @@
             </form>
             <h2 align="left"> <span th:text="${username}"></span> </h2>
         </div>
-        <div class="chat-header">
+
+        <div class="chat-header" id="chat-topic">
             <h2>General topic of the chat is <b><span id="room_id_display"></span></b></h2>
         </div>
         <div class="connecting">
             Connecting...
         </div>
+
         <ul id="messageArea">
         </ul>
+
         <form id="messageForm" name="messageForm">
-            <div class="form-group">
+            <div>
                 <div class="input-group clearfix">
                     <input type="text" id="message" autocomplete="off" placeholder="Type a message..." class="form-control" />
                     <button type="submit" class="primary">Send</button>
@@ -97,24 +110,34 @@
     </div>
 
     <div id="online-users-container" class="hidden">
-        <h2 class="title">Invite user by e-mail:</h2>
-        <div id="emptyEmail" class="hidden">
-            <p class="error-event">Please, enter the e-mail!</p>
+        <div class="chat-header">
+            <form class="user-container">
+                <button type="button" class="accent" onclick="closeUsersList()">Back to chat</button>
+            </form>
+            <h2 align="left">Invite users to chat</h2>
         </div>
-        <form id="inviteForm" name="inviteForm">
-            <input type="email" id="email" placeholder="E-mail" autocomplete="off" class="form-control" />
-            <br><br>
-            <div align="right">
-                <button type="button" class="accent" onclick="sendInviteByEmail()">Invite by e-mail</button>
+
+        <div class="data-container">
+            <p><i>Here you can invite users to this chat-room, using e-mail, or choosing online users from list.</i></p>
+            <div id="emptyEmail" class="hidden">
+                <p class="error-event">Please, enter the e-mail!</p>
             </div>
-        </form>
-        <h2 class="title">All users online:</h2>
-        <div class="all-users-scrollbox">
+            <p><b>Invite user by e-mail:</b></p>
+            <form id="inviteForm" name="inviteForm">
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="E-mail" autocomplete="off" class="form-control" />
+                </div>
+                <div class="form-group" align="right">
+                    <button type="button" class="accent" onclick="sendInviteByEmail()">Invite by e-mail</button>
+                </div>
+            </form>
+
+            <p><b>All users online:</b></p>
+
             <ul id="userListArea">
             </ul>
-        </div>
-        <div align="right">
-            <button type="button" class="accent" onclick="closeUsersList()">Back to chat</button>
+
+            </div>
         </div>
     </div>
 

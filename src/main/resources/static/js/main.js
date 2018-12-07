@@ -122,12 +122,15 @@ function connectAnonymous() {
 //--------------------------------------------------------------------------------------------------------------------//
 
 function connectToChat() {
-    inventionArea.innerHTML = '';
     currentSubscription.unsubscribe();
     stompClient.disconnect();
 
     let socket = new SockJS('/ws');
     stompClient = Stomp.over(socket);
+
+    if (inventionArea != null) {
+        inventionArea.innerHTML = '';
+    }
 
     inviteContainer.classList.add('hidden');
     chatElement.classList.remove('hidden');

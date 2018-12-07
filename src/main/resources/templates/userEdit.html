@@ -7,10 +7,16 @@
     <link rel="stylesheet" th:href="@{/css/main.css}" />
 </head>
 <body>
-    <div id="user-edit-container" class="username-page-container">
-        <h1>User editor</h1>
-        <form id="user-editor" th:action="@{/admin}" method="post">
-            <div class="form-group">
+    <div class="inside-container">
+        <div class="chat-header">
+            <form class="user-container" th:action="@{/admin}">
+                <button type="submit" class="accent">Back</button>
+            </form>
+            <h2 class="title" align="left">User editor</h2>
+        </div>
+
+        <div class="data-container">
+            <form id="user-editor" th:action="@{/admin}" method="post">
                 <p>Username:</p>
                 <input type="text" name="username" th:value="${user.login}" class="form-control" />
                 <br>
@@ -22,14 +28,12 @@
                     <input type="checkbox" th:name="${role}" th:text="${role}" th:checked="${#sets.contains(user.roles, role)}" />
                 </div>
                 <input type="text" name="userId" th:value="${user.id}" class="hidden" />
-            </div>
-            <br>
-            <div class="form-group" align="right">
-                <button type="submit" class="accent username-submit">Update user data</button>
-                &nbsp;
-                <a th:href="@{/admin}">Back</a>
-            </div>
-        </form>
+                <br>
+                <div align="right">
+                    <button type="submit" class="accent username-submit">Update user data</button>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>

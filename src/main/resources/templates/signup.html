@@ -23,6 +23,9 @@
         <div class="form-group" align="right">
             <a th:href="@{/goToSignInPage}">Return to Sign In page</a>
         </div>
+        <div class="form-group" align="right" th:if="${message}">
+            <a th:href="@{/resend.html}">Resend activation code</a>
+        </div>
     </form>
 </div>
 </body>
