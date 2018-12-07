@@ -12,7 +12,7 @@ let messageForm = document.querySelector('#messageForm');
 let messageInput = document.querySelector('#message');
 
 let stompClient = null;
-let currentSubscription;
+let currentSubscription = null;
 let topic = null;
 
 let roomId = null;
