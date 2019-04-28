@@ -19,8 +19,14 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping("/")
+    public ResponseEntity<?> getAllUsers() {
+        List<User> users = userRepository.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/online")
     public ResponseEntity<?> getOnlineUsers() {
         List<User> users = userRepository.getOnlineUsers();
-        return  ResponseEntity.ok(users);
+        return ResponseEntity.ok(users);
     }
 }

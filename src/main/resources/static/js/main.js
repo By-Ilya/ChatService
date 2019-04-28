@@ -304,9 +304,9 @@ function getUsersList() {
                     let userLoginButton = document.createElement('button');
                     userLoginButton.type = 'button';
                     userLoginButton.classList.add('default');
-                    userLoginButton.setAttribute('onclick', 'sendInvite(\'' + user.toString() + '\')');
+                    userLoginButton.setAttribute('onclick', 'sendInvite(\'' + user.login.toString() + '\')');
 
-                    let userText = document.createTextNode(user.toString());
+                    let userText = document.createTextNode(user.login.toString());
 
                     userLoginButton.appendChild(userText);
                     userElement.appendChild(userLoginButton);
