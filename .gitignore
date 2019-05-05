@@ -26,3 +26,4 @@
 
 ### Properties files ###
 src/main/resources/*.properties
+.DS_Store

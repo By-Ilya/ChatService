@@ -62,16 +62,16 @@ public class UserService implements UserDetailsService {
         user.setActivationCode(UUID.randomUUID().toString());
 
         String message = String.format(
-                "Hello, %s! \nWelcome to Spring Web Chat! " +
+                "Hello, %s! \nWelcome to Plintum Chatboard! " +
                         "To activate your account, please, visit next link: %s/activate/%s",
                 user.getLogin(), url, user.getActivationCode()
         );
 
         if (isRequiredAuth) {
-            mailSender.sendMail(user.getEmail(), "[Spring Web Chat] Activation code", message);
+            mailSender.sendMail(user.getEmail(), "[Plintum Chatboard] Activation code", message);
         }
         else {
-            mailJavaAPI.sendMail(user.getEmail(), "[Spring Web Chat] Activation code", message);
+            mailJavaAPI.sendMail(user.getEmail(), "[Plintum Chatboard] Activation code", message);
         }
 
         long userId = userRepository.save(user).getId();

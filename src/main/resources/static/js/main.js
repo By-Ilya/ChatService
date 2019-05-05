@@ -147,6 +147,8 @@ function enterRoom() {
     }
 
     currentSubscription = stompClient.subscribe('/channel/' + roomId, onMessageReceived);
+    getLastDialogMessages(roomId);
+
     stompClient.send(topic + '/addUser', {}, JSON.stringify({sender: username, type: 'JOIN', content: roomName}));
 }
 
@@ -295,7 +297,6 @@ function getUsersList() {
     fetch("/users/")
         .then(response => {
             response.text().then(data =>{
-                console.log(data);
                 let users = JSON.parse(data);
                 let userListArea = document.getElementById('userListArea');
                 for (let user of users) {
@@ -304,9 +305,9 @@ function getUsersList() {
                     let userLoginButton = document.createElement('button');
                     userLoginButton.type = 'button';
                     userLoginButton.classList.add('default');
-                    userLoginButton.setAttribute('onclick', 'sendInvite(\'' + user.toString() + '\')');
+                    userLoginButton.setAttribute('onclick', 'sendInvite(\'' + user.login.toString() + '\')');
 
-                    let userText = document.createTextNode(user.toString());
+                    let userText = document.createTextNode(user.login.toString());
 
                     userLoginButton.appendChild(userText);
                     userElement.appendChild(userLoginButton);
@@ -363,3 +364,48 @@ function changeDialog() {
 }
 
 //--------------------------------------------------------------------------------------------------------------------//
+
+function getLastDialogMessages(uuid) {
+    fetch("/messages/" + uuid)
+        .then(response => {
+            response.text().then(data =>{
+
+                if (data != null) {
+                    let messages = JSON.parse(data);
+
+                    console.log(data);
+
+                    for (let message of messages) {
+                        let messageElement = document.createElement('li');
+
+                        messageElement.classList.add('chat-message');
+
+                        let avatarElement = document.createElement('i');
+                        let avatarText = document.createTextNode(message.author[0]);
+                        avatarElement.appendChild(avatarText);
+                        avatarElement.style['background-color'] = getAvatarColor(message.author);
+
+                        messageElement.appendChild(avatarElement);
+
+                        let usernameElement = document.createElement('span');
+                        let usernameText = document.createTextNode(message.author);
+                        usernameElement.appendChild(usernameText);
+                        messageElement.appendChild(usernameElement);
+
+                        let textElement = document.createElement('p');
+                        let messageText = document.createTextNode(message.text);
+
+                        textElement.appendChild(messageText);
+                        messageElement.appendChild(textElement);
+                        messageArea.appendChild(messageElement);
+                        messageArea.scrollTop = messageArea.scrollHeight;
+
+                        postMessageTime(message.dateTime);
+                    }
+                }
+            });
+        })
+        .catch(response => {
+            console.log("Something wrong!", response);
+        })
+}

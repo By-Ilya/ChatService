@@ -47,10 +47,10 @@ public class WebSocketService {
         );
 
         if (isRequiredAuth) {
-            mailSender.sendMail(message.getSendTo(), "[Spring Web Chat] New invitation", emailMessage);
+            mailSender.sendMail(message.getSendTo(), "[Plintum Chatboard] New invitation", emailMessage);
         }
         else {
-            mailJavaAPI.sendMail(message.getSendTo(), "[Spring Web Chat] New invitation", emailMessage);
+            mailJavaAPI.sendMail(message.getSendTo(), "[Plintum Chatboard] New invitation", emailMessage);
         }
     }
 }
