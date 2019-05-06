@@ -20,11 +20,7 @@ public class UserController {
 
     @GetMapping("/")
     public ResponseEntity<?> getAllUsers() {
-<<<<<<< HEAD
         List<User> users = userRepository.getRegisteredUsers();
-=======
-        List<User> users = userRepository.getAllUsers();
->>>>>>> f2e59fb79b8c67d95260bae52fddc2f22b44b014
         return ResponseEntity.ok(users);
     }
 

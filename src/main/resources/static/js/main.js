@@ -90,10 +90,11 @@ function connectOperator() {
     roomName = document.getElementById('newRoomName').value;
 
     if (roomName === "") {
-        document.getElementById('emptyRoomName').classList.remove('hidden')
+        document.getElementById('emptyRoomName').classList.remove('hidden');
     }
     else {
         roomId = uuid();
+        document.getElementById('emptyRoomName').classList.add('hidden');
         connectToChat();
     }
 }
@@ -372,8 +373,6 @@ function getLastDialogMessages(uuid) {
 
                 if (data != null) {
                     let messages = JSON.parse(data);
-
-                    console.log(data);
 
                     for (let message of messages) {
                         let messageElement = document.createElement('li');
