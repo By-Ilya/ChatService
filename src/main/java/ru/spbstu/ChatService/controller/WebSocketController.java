@@ -19,6 +19,7 @@ import ru.spbstu.ChatService.repository.UserRepository;
 import ru.spbstu.ChatService.service.WebSocketService;
 
 import java.util.Date;
+import java.util.UUID;
 
 import static java.lang.String.format;
 
@@ -52,7 +53,13 @@ public class WebSocketController {
 
         if (message.getType() == ChatMessage.MessageType.NEW_DIALOG) {
             Session session = sessionRepository.getBySessionUID(roomId);
-            dialogRepository.save(new Dialog(session));
+
+            Dialog dialog = new Dialog();
+            dialog.setSession(session);
+            dialog.setDialogUID(UUID.randomUUID().toString());
+            dialog.setCreated(new Date());
+
+            dialogRepository.save(dialog);
         }
 
         if (message.getType() == ChatMessage.MessageType.CHAT) {
@@ -86,7 +93,13 @@ public class WebSocketController {
         if (session == null) {
             session = new Session(roomId, message.getContent());
             sessionRepository.save(session);
-            dialogRepository.save(new Dialog(session));
+
+            Dialog dialog = new Dialog();
+            dialog.setSession(session);
+            dialog.setDialogUID(UUID.randomUUID().toString());
+            dialog.setCreated(new Date());
+
+            dialogRepository.save(dialog);
         }
 
         if (currentRoomId != null) {

@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @AllArgsConstructor
@@ -22,6 +24,17 @@ public class Dialog implements Serializable {
 
     @ManyToOne
     private Session session;
+
+    @Column(name = "dialog_uid")
+    private String dialogUID;
+
+    @Column
+    @NotNull
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date created;
+
+    @Column(name = "bot_id")
+    private Long botId;
 
     public Dialog(Session session) {
         this.session = session;

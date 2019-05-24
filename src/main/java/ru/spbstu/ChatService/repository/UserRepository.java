@@ -13,7 +13,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
     @Query("SELECT u.login FROM User u WHERE u.active = true and u.login <> 'admin'")
     List<User> getOnlineUsers();
 
-    @Query("SELECT u FROM User u WHERE u.login <> 'admin' AND u.password IS NOT NULL ORDER BY u.login")
+    @Query("SELECT u FROM User u WHERE u.login <> 'admin' AND u.password IS NOT NULL " +
+            "AND u.activationCode = 'activated' ORDER BY u.login")
     List<User> getRegisteredUsers();
 
     @Query("SELECT u FROM User u WHERE u.login <> 'admin' ORDER BY u.login")

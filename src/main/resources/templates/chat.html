@@ -32,17 +32,33 @@
                                class="form-control" />
                     </div>
                     <div class="form-group" align="right">
+                        <button type="button" class="accent" onclick="showCreatedRooms()">View created rooms</button>
                         <button id="operatorConnect" type="submit" class="accent" onclick="connectOperator()">
                             Create new chat-room</button>
                     </div>
                 </form>
             </div>
 
-            <div th:if="${#sets.contains(userRoles, allRoles[1])}">
+            <div id="createdRoomsLabel" th:if="${#sets.contains(userRoles, allRoles[3])}" class="hidden">
+                <p><i>Here's your created rooms. Click on one of the rooms below to continue the chat.</i> </p>
+            </div>
+
+            <div th:if="${#sets.contains(userRoles, allRoles[3])}" id="createdRooms" class="hidden">
+                <ul id="createdRoomsArea">
+                    <li th:if="${roomId} and ${roomName}">
+                        <button type="button" class="default" th:text="${roomName}"
+                                th:onclick="'connectUser(\''+ ${roomId} + '\', \'' + ${roomName} + '\')'"></button></li>
+                </ul>
+                <div class="form-group" align="right">
+                    <button type="button" class="accent" onclick="closeCreatedRooms()">Close</button>
+                </div>
+            </div>
+
+            <div id="usersLabel" th:if="${#sets.contains(userRoles, allRoles[1])}">
                 <p><i>Here's your invitation room. Click on one of the invitations below to start the chat.</i> </p>
             </div>
 
-            <div th:if="${#sets.contains(userRoles, allRoles[1])}">
+            <div id="usersInvitations" th:if="${#sets.contains(userRoles, allRoles[1])}">
                 <ul id="inventionArea">
                     <li th:if="${roomId} and ${roomName}">
                         <button type="button" class="default" th:text="${roomName}"
@@ -77,6 +93,7 @@
         </form>
     </div>
 
+    <!-- ########################################################################################################### -->
 
     <div id="chat-container" class="hidden">
         <div class="chat-header">
@@ -137,8 +154,6 @@
 
             <ul id="userListArea">
             </ul>
-
-            </div>
         </div>
     </div>
 

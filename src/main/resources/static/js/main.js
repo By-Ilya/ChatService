@@ -277,6 +277,31 @@ messageForm.addEventListener('submit', sendMessage, true);
 
 //--------------------------------------------------------------------------------------------------------------------//
 
+let invitationsLabel = document.getElementById("usersLabel");
+let usersInvitations = document.getElementById("usersInvitations");
+let createdRoomsLabel = document.getElementById("createdRoomsLabel");
+let createdRooms = document.getElementById("createdRooms");
+
+function showCreatedRooms() {
+    invitationsLabel.classList.add("hidden");
+    usersInvitations.classList.add("hidden");
+
+    createdRoomsLabel.classList.remove("hidden");
+    createdRooms.classList.remove("hidden");
+
+    // TODO: fetech query, show all created rooms by operator
+}
+
+function closeCreatedRooms() {
+    invitationsLabel.classList.remove("hidden");
+    usersInvitations.classList.remove("hidden");
+
+    createdRoomsLabel.classList.add("hidden");
+    createdRooms.classList.add("hidden");
+}
+
+//--------------------------------------------------------------------------------------------------------------------//
+
 let allUsersContainer = document.querySelector('#online-users-container');
 let userListArea = document.querySelector('#userListArea');
 
